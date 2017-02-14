@@ -4,4 +4,30 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
+DocoptExit	dojo_app.py	/^from docopt import docopt, DocoptExit$/;"	kind:namespace	line:19
+Dojo	dojo_app.py	/^from models.dojo import Dojo$/;"	kind:namespace	line:20
+Dojo	models/dojo.py	/^class Dojo(object):$/;"	kind:class	line:1
+DojoRoom	dojo_app.py	/^class DojoRoom(cmd.Cmd):$/;"	kind:class	line:54
+Person	models/person.py	/^class Person:$/;"	kind:class	line:1
+Room	models/room.py	/^class Room:$/;"	kind:class	line:1
+__init__	models/person.py	/^      def __init__(self,firstName,lastName,rank):$/;"	kind:member	line:2
+__init__	models/room.py	/^  def __init__(self, arg):$/;"	kind:member	line:6
 __init__.py	models/__init__.py	1;"	kind:file	line:1
+add_person	models/dojo.py	/^    def add_person(self, arg):$/;"	kind:member	line:9
+cmd	dojo_app.py	/^import cmd$/;"	kind:namespace	line:18
+create_room	models/dojo.py	/^    def create_room(self, arg):$/;"	kind:member	line:3
+do_add_person	dojo_app.py	/^    def do_add_person(self, arg):$/;"	kind:member	line:67
+do_create_room	dojo_app.py	/^    def do_create_room(self, arg):$/;"	kind:member	line:60
+do_quit	dojo_app.py	/^    def do_quit(self, arg):$/;"	kind:member	line:72
+docopt	dojo_app.py	/^from docopt import docopt, DocoptExit$/;"	kind:namespace	line:19
+docopt_cmd	dojo_app.py	/^def docopt_cmd(func):$/;"	kind:function	line:23
+dojo.py	models/dojo.py	1;"	kind:file	line:1
+dojo_app.py	dojo_app.py	1;"	kind:file	line:1
+file	dojo_app.py	/^    file = None$/;"	kind:variable	line:57
+fn	dojo_app.py	/^    def fn(self, arg):$/;"	kind:function	line:28
+opt	dojo_app.py	/^opt = docopt(__doc__, sys.argv[1:])$/;"	kind:variable	line:76
+person.py	models/person.py	1;"	kind:file	line:1
+prompt	dojo_app.py	/^    prompt = '(Dojo) '$/;"	kind:variable	line:56
+room.py	models/room.py	1;"	kind:file	line:1
+roomCount	models/room.py	/^  roomCount = 0$/;"	kind:variable	line:4
+sys	dojo_app.py	/^import sys$/;"	kind:namespace	line:17

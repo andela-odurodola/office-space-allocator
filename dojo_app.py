@@ -2,7 +2,7 @@
 This Application automatically allocated spaces to people at random
 Usage:
     dojo_app.py create_room <room_type> <room_name>...
-    dojo_app.py add_person <first_name> <last_name> (fellow|staff) [<wants_accomodation>]
+    dojo_app.py add_person <first_name> <last_name> <fellow/staff> [<wants_accomodation>]
     dojo_app.py -h | --help
     dojo_app.py -V | --version
     dojo_app.py -i | --interactive   
@@ -25,10 +25,9 @@ def docopt_cmd(func):
     This decorator is used to simplify the try/except block and pass the result
     of the docopt parsing to the called action.
     """
-
     def fn(self, arg):
         try:
-            result = docopt(fn.__doc__, arg)
+            opt = docopt(fn.__doc__, arg)
 
         except DocoptExit as e:
             # The DocoptExit is thrown when the args do not match.
@@ -44,7 +43,7 @@ def docopt_cmd(func):
 
             return
 
-        return func(self, result)
+        return func(self, opt)
 
     fn.__name__ = func.__name__
     fn.__doc__ = func.__doc__
@@ -60,21 +59,24 @@ class DojoRoom(cmd.Cmd):
     @docopt_cmd
     def do_create_room(self, arg):
         """Usage: create_room <room_type>  <room_name>..."""
-        # Dojo().create_room(arg)
+        Dojo().create_room(arg)
+        print(arg)
 
+    
+    @docopt_cmd
     def do_add_person(self, arg):
-        """Usage: add_person <first_name> <last_name> (fellow|staff) [<wants_accomodation>]"""
+        """Usage: add_person <first_name> <last_name> <fellow/staff> [<wants_accomodation>]"""
+        Dojo().add_person(arg)
+        print(arg)
         
 
     def do_quit(self, arg):
         """Quits out of Interactive Mode."""
         exit()
 
+opt = docopt(__doc__, sys.argv[1:])
 
-if __name__ == '__main__':
-    result = docopt(__doc__, sys.argv[1:], version=1.0)
+if opt['--interactive']:
+    DojoRoom().cmdloop()
 
-    if result['--interactive']:
-        DojoRoom().cmdloop()
-
-    print(result)
+print(opt)
