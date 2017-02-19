@@ -1,10 +1,10 @@
 #!/usr/bin/python3
-import room
+from models.room.room import Room
 
 
 class Office(Room):
 
-    def __init__(self, arg, max_occupant, member):
-        Room.__init__(self, arg)
-        self.max_occupant = 6
-        self.member = []
+    def __init__(self, room_name):
+        super().__init__(room_name)
+        self.room_type = "OFFICE"
+        self.max_occupants = 6

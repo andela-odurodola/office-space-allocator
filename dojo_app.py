@@ -11,6 +11,7 @@ Options:
     -h, --help              Show message and exit.
     -V, --version           Show the version.
     -i, --interactive       interactive.
+  
 
 """
 import sys
@@ -67,9 +68,11 @@ class DojoRoom(cmd.Cmd):
         """Usage: add_person <first_name> <last_name> <FELLOW/STAFF> [<wants_accomodation>]"""
         self.dojo.add_person(arg)
 
-    def do_quit(self, arg):
+    def do_q(self, arg):
         """Quits out of Interactive Mode."""
         exit()
+    
+
 
 opt = docopt(__doc__, sys.argv[1:])
 

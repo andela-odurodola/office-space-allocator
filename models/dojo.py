@@ -1,42 +1,89 @@
-from models import room
-from models import person
+from models.room.office_space import Office
+from models.room.living_space import LivingSpace
+from models.room.room import Room
+from models.person.person import Person
+from models.person.fellow import Fellow
+from models.person.staff import Staff
+import random
 
 
 class Dojo(object):
     """ The Dojo class"""
 
+    rooms = {}
+    persons = {}
+
     def __init__(self):
-        self.rooms = []
-        self.persons = []
+        pass
 
     def create_room(self, arg):
         """ This function creates a new room """
+
         room_type = arg["<room_type>"]
         room_names = arg["<room_name>"]
 
         for room_name in room_names:
-            self.rooms.append(room_name)
-            prefix = "A" if room_type == "livingspace" else "An"
-            print("%s %s called %s has been successfully created" %
-                  (prefix,room_type, room_name))
-        print(self.rooms, "....")       
+            if room_type.upper() == "OFFICE":
+                new_space = Office(room_name)
+                self.rooms[room_name] = new_space
+
+            elif room_type.upper() == "LIVINGSPACE":
+                new_space = LivingSpace(room_name)
+                self.rooms[room_name] = new_space
+
+            Prefix = ("A" if room_type.upper() == "LIVINGSPACE" else "An")
+            print("{} {} called {} has been successfully created".format
+                  (Prefix, room_type, room_name))
+
+            # else:
+            #     print("Invalid Room")
 
     def add_person(self, arg):
         """ This function adds a person """
         first_name = arg["<first_name>"]
         last_name = arg["<last_name>"]
         rank = (arg["<FELLOW/STAFF>"])
-        wants_accomodation = arg["<wants_accomodation>"]
+        wants_accomodation = (arg["<wants_accomodation>"] or "N")
 
-        if rank == 'FELLOW':
-            print("%s %s %s has been successfully added" %
-                  (self.rank, self.first_name, self.last_name))
-        elif self.rank == "STAFF":
-            print("%s %s %s has been successfully added" %
-                  (self.rank, self.first_name, self.last_name))
+        if rank.upper() == "STAFF":
+            new_user = Staff(first_name, last_name)
+            self.persons[first_name] = new_user
+            hi = self.assign_person(new_user)
+            print(hi)
+
+        elif rank.upper() == "FELLOW":
+            new_user = Fellow(first_name, last_name,
+                              wants_accomodation.upper())
+            self.persons[first_name] = new_user
+            hi = self.assign_person(new_user)
+            print(hi)
+
+            # self.persons[first_name][
+            #     "wants_accomodation"] = nwants_accomodation.upper()
+
         else:
             print("Invalid Person")
-        # print(type(self.rank))
+            return
 
-        # print("Staff Neil Armstrong has been successfully added")
+        # print(self.persons[first_name].last_name)
+
+        # print("{} {} {} has been successfully added".format
+        #       (self.persons[first_name]["rank"], self.persons[first_name]["first_name"], self.persons[first_name]["last_name"]))
+
+    def assign_person(self, person):
+        """ This function randomly assigns a person to a room """
+        if person.wants_accomodation == "Y":
+            for room_name, room in self.rooms.items():
+                return((room_name))
+
+            # first_name, room_type,room_name
+            # Room = self.rooms.keys()
+            # for name in self.persons:
+            #     for j in self.persons[name]:
+            #         for yes in self.persons[name][j]:
+            #             if yes == "Y":
+
+            # return ("{} has been allocated the {}".format(
+            #     self.persons[name], random.choice(Room)))
+
         # Neil has been allocated the office Blue

@@ -1,8 +1,9 @@
-import person
+from models.person.person import Person
+
 
 class Fellow(Person):
-    def __init__(self,arg,office_name,living_name):
-        Person.__init__(self,arg)
-        self.office_name = office_name
-        self.living_name = living_name
-        
+
+    def __init__(self, first_name, last_name, wants_accomodation):
+        super().__init__(first_name, last_name, wants_accomodation)
+        self.rank = "FELLOW"
+        self.living_space = ""
