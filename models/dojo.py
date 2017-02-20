@@ -31,12 +31,12 @@ class Dojo(object):
                 new_space = LivingSpace(room_name)
                 self.rooms[room_name] = new_space
 
+            else:
+                print("Invalid Room")
+
             Prefix = ("A" if room_type.upper() == "LIVINGSPACE" else "An")
             print("{} {} called {} has been successfully created".format
                   (Prefix, room_type, room_name))
-
-            # else:
-            #     print("Invalid Room")
 
     def add_person(self, arg):
         """ This function adds a person """
@@ -48,27 +48,26 @@ class Dojo(object):
         if rank.upper() == "STAFF":
             new_user = Staff(first_name, last_name)
             self.persons[first_name] = new_user
-            hi = self.assign_person(new_user)
-            print(hi)
 
         elif rank.upper() == "FELLOW":
             new_user = Fellow(first_name, last_name,
                               wants_accomodation.upper())
             self.persons[first_name] = new_user
-            hi = self.assign_person(new_user)
-            print(hi)
-
-            # self.persons[first_name][
-            #     "wants_accomodation"] = nwants_accomodation.upper()
 
         else:
             print("Invalid Person")
             return
 
-        # print(self.persons[first_name].last_name)
+        print("{} {} {} has been successfully added".format
+              (self.persons[first_name].rank, self.persons[first_name].first_name, self.persons[first_name].last_name))
 
-        # print("{} {} {} has been successfully added".format
-        #       (self.persons[first_name]["rank"], self.persons[first_name]["first_name"], self.persons[first_name]["last_name"]))
+        hi = self.assign_person(new_user)
+        print(hi)
+
+        # self.persons[first_name][
+        #     "wants_accomodation"] = nwants_accomodation.upper()
+
+        # print(self.persons[first_name].last_name)
 
     def assign_person(self, person):
         """ This function randomly assigns a person to a room """
