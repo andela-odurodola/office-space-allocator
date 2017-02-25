@@ -6,7 +6,7 @@ class Person(object):
         self.last_name = last_name.upper()
         self.full_name = first_name + " " + last_name
         self.wants_accomodation = wants_accomodation or "N"
-        self.office_space = ""
+        self.office_space_allocated = ""
         type(self).id += 1
 
     def __repr__(self):

@@ -13,6 +13,7 @@ class Dojo(object):
 
     office_room = {}
     living_room = {}
+    rooms = {}
     persons = {}
 
     def __init__(self):
@@ -34,6 +35,8 @@ class Dojo(object):
             else:
                 print("Invalid Room")
 
+            self.rooms.update(self.office_room)
+            self.rooms.update(self.living_room)
             Prefix = ("A" if room_type.upper() == "LIVINGSPACE" else "An")
             print("{} {} called {} has been successfully created".format
                   (Prefix, room_type, room_name))
@@ -82,9 +85,11 @@ class Dojo(object):
         else:
             # pdb.set_trace()
             assigned_office_space = random.choice(available_office_spaces)
-            assigned_office_space.occupants.append(person)
+            assigned_office_space.occupants.append(person.first_name)
             print ("{0} has been allocated the office {1}".format(
                 person.first_name, assigned_office_space.room_name))
+            person.office_space_allocated.join(
+                assigned_office_space.room_name)
 
         if person.wants_accomodation.upper() == "Y":
             available_living_spaces = self.get_available_room_spaces(
@@ -96,3 +101,49 @@ class Dojo(object):
                 assigned_living_space.occupants.append(person)
                 print ("{0} has been allocated the livingspace {1}".format(
                     person.first_name, assigned_living_space.room_name))
+
+    def print_room(self, arg):
+        """ This function prints the names of all people in the stated room name"""
+
+        room_name = arg["<room_name>"]
+        for name in self.rooms:
+            if name == room_name:
+                if len(self.rooms[name].occupants) == 0:
+                    print("Room {0} does not have occupants".format(name))
+                else:
+                    print (self.rooms[name].occupants)
+            else:
+                print("Room {0} doesn't exist".format(name))
+
+    def print_allocations(self, arg):
+        """ This function prints a list of all allocated rooms with their members """
+        # pdb.set_trace()
+        allocation_file = arg["--o"]
+        for name in self.rooms:
+            if len(self.rooms[name].occupants) != 0:
+                if allocation_file == None:
+
+                    print(self.rooms[
+                          name].room_name + "\n---------------------------------------------------------\n" +
+                          str(self.rooms[name].occupants) + "\n")
+                else:
+                    result = open(allocation_file + ".txt", "a")
+                    result.write(self.rooms[
+                        name].room_name + "\n---------------------------------------------------------\n" +
+                        str(self.rooms[name].occupants) + "\n")
+                    result.close()
+
+    def print_unallocated(self, arg):
+        """ This function prints a list of unallocated persons to either the screen or text file"""
+
+        unallocated_file = arg["--o"]
+
+        for name in self.rooms:
+            for person_name in self.persons:
+                if person_name.upper() not in (self.rooms[name].occupants):
+                    if unallocated_file == None:
+                        print(person_name.upper())
+                    else:
+                        result = open(unallocated_file + ".txt", "a")
+                        result.write(person_name.upper())
+                        result.close()

@@ -3,6 +3,7 @@ from models.dojo import Dojo
 
 
 class Test_create_room(unittest.TestCase):
+    """Tests functionalities"""
 
     def test_create_room_successfully(self):
         my_class_instance = MyClass()
@@ -11,3 +12,6 @@ class Test_create_room(unittest.TestCase):
         self.assertTrue(blue_office)
         new_room_count = len(my_class_instance.all_rooms)
         self.assertEqual(new_room_count - initial_room_count, 1)
+
+if __name__ == '__main__':
+    unittest.main()

@@ -3,15 +3,19 @@ This Application automatically allocated spaces to people at random
 Usage:
     dojo_app.py create_room <room_type> <room_name>...
     dojo_app.py add_person <first_name> <last_name> <FELLOW/STAFF> [<wants_accomodation>]
+    dojo_app.py print_room <room_name>
+    dojo_app.py print_allocations [--o=filename]
+    dojo_app.py print_unallocated [--o=filename]
     dojo_app.py -h | --help
     dojo_app.py -V | --version
-    dojo_app.py -i | --interactive   
+    dojo_app.py -i | --interactive
 
 Options:
+    -o                      Outputs the result into a text file.
     -h, --help              Show message and exit.
     -V, --version           Show the version.
     -i, --interactive       interactive.
-  
+
 
 """
 import sys
@@ -68,13 +72,31 @@ class DojoRoom(cmd.Cmd):
         """Usage: add_person <first_name> <last_name> <FELLOW/STAFF> [<wants_accomodation>]"""
         self.dojo.add_person(arg)
 
+    @docopt_cmd
+    def do_print_room(self, arg):
+        """Usage: print_room <room_name>"""
+        self.dojo.print_room(arg)
+        # print(arg)
+
+    @docopt_cmd
+    def do_print_allocations(self, arg):
+        """Usage: print_allocations [--o=filename]"""
+        self.dojo.print_allocations(arg)
+        # print(arg)
+
+    @docopt_cmd
+    def do_print_unallocated(self, arg):
+        """Usage: print_unallocated [--o=filename]"""
+        self.dojo.print_unallocated(arg)
+        # print(arg)
+
     def do_q(self, arg):
         """Quits out of Interactive Mode."""
         exit()
-    
 
 
 opt = docopt(__doc__, sys.argv[1:])
+
 
 if opt['--interactive']:
     DojoRoom().cmdloop()
