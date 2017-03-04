@@ -6,6 +6,8 @@ Usage:
     dojo_app.py print_room <room_name>
     dojo_app.py print_allocations [--o=filename]
     dojo_app.py print_unallocated [--o=filename]
+    dojo_app.py reallocate_person <person_identifier> <new_room_name>​
+    dojo_app.py load_people <text_file>
     dojo_app.py -h | --help
     dojo_app.py -V | --version
     dojo_app.py -i | --interactive
@@ -89,6 +91,16 @@ class DojoRoom(cmd.Cmd):
         """Usage: print_unallocated [--o=filename]"""
         self.dojo.print_unallocated(arg)
         # print(arg)
+
+    @docopt_cmd
+    def do_reallocate_person(self, arg):
+        """Usage: reallocate_person <person_identifier> <new_room_name>"""
+        self.dojo.reallocate_person(arg)
+
+    @docopt_cmd
+    def do_load_people(self, arg):
+        """Usage: load_people <text_file>"""
+        self.dojo.load_people(arg)
 
     def do_q(self, arg):
         """Quits out of Interactive Mode."""

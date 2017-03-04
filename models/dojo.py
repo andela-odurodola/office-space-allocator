@@ -1,48 +1,46 @@
+import random
+
 from models.room.office_space import Office
 from models.room.living_space import LivingSpace
-from models.room.room import Room
-from models.person.person import Person
 from models.person.fellow import Fellow
 from models.person.staff import Staff
-import random
-import pdb
 
 
 class Dojo(object):
-    """ The Dojo class"""
+    """The Dojo class."""
 
-    office_room = {}
-    living_room = {}
-    rooms = {}
+    office_rooms = {}
+    living_rooms = {}
     persons = {}
+    divider = ("\n{}\n".format("-" * 30))
 
     def __init__(self):
         pass
 
     def create_room(self, arg):
-        """ This function creates a new room """
-
+        """The function creates a new room."""
         room_type = arg["<room_type>"]
         room_names = arg["<room_name>"]
-
         for room_name in room_names:
-            if room_type.upper() == "OFFICE":
-                self.office_room[room_name] = Office(room_name)
-
-            elif room_type.upper() == "LIVINGSPACE":
-                self.living_room[room_name] = LivingSpace(room_name)
-
+            if room_name == ('office' or 'livingspace'):
+                raise Exception("This is not a valid room name")
             else:
-                print("Invalid Room")
+                if room_type.upper() == "OFFICE":
+                    self.office_rooms[room_name] = Office(room_name)
 
-            self.rooms.update(self.office_room)
-            self.rooms.update(self.living_room)
-            Prefix = ("A" if room_type.upper() == "LIVINGSPACE" else "An")
-            print("{} {} called {} has been successfully created".format
-                  (Prefix, room_type, room_name))
+                elif room_type.upper() == "LIVINGSPACE":
+                    self.living_rooms[room_name] = LivingSpace(room_name)
+
+                else:
+                    raise Exception("Invalid Room Type.\
+                                    Must be office or living")
+
+                Prefix = ("A" if room_type.upper() == "LIVINGSPACE" else "An")
+                print("{} {} called {} has been successfully created".format(
+                    Prefix, room_type, room_name))
 
     def add_person(self, arg):
-        """ This function adds a person """
+        """The function adds a person to a room randomly."""
         first_name = arg["<first_name>"]
         last_name = arg["<last_name>"]
         rank = (arg["<FELLOW/STAFF>"])
@@ -50,20 +48,23 @@ class Dojo(object):
 
         if rank.upper() == "STAFF":
             new_user = Staff(first_name, last_name)
-            self.persons[first_name] = new_user
+            staff_id = "S" + str(new_user.id)
+            self.persons[staff_id] = new_user
+
+            print("{0} {1} has been successfully added".format(self.persons[
+                staff_id].rank, self.persons[staff_id]))
 
         elif rank.upper() == "FELLOW":
             new_user = Fellow(first_name, last_name,
                               wants_accomodation.upper())
-            self.persons[first_name] = new_user
+            fellow_id = "F" + str(new_user.id)
+            self.persons[fellow_id] = new_user
+
+            print("{0} {1} has been successfully added".format(self.persons[
+                fellow_id].rank, self.persons[fellow_id]))
 
         else:
-            print("Invalid Person")
-            return
-
-        # print(self.persons[first_name].id)
-        print("{} {} {} has been successfully added".format
-              (self.persons[first_name].rank, self.persons[first_name].first_name, self.persons[first_name].last_name))
+            raise Exception('Person can only be a fellow or staff')
 
         self.assign_person(new_user)
 
@@ -76,74 +77,102 @@ class Dojo(object):
         return available_room_spaces
 
     def assign_person(self, person):
-        """ This function randomly assigns a person to a room """
-
+        """The function randomly assigns a person to a room."""
         available_office_spaces = self.get_available_room_spaces(
-            self.office_room)
+            self.office_rooms)
         if available_office_spaces == []:
             print("There is currently no office space")
         else:
-            # pdb.set_trace()
             assigned_office_space = random.choice(available_office_spaces)
-            assigned_office_space.occupants.append(person.first_name)
-            print ("{0} has been allocated the office {1}".format(
+            assigned_office_space.occupants.append(person)
+            person.office_space_allocated = assigned_office_space.room_name
+            print("{0} has been allocated the office {1}".format(
                 person.first_name, assigned_office_space.room_name))
-            person.office_space_allocated.join(
-                assigned_office_space.room_name)
 
         if person.wants_accomodation.upper() == "Y":
             available_living_spaces = self.get_available_room_spaces(
-                self.living_room)
+                self.living_rooms)
             if available_living_spaces == []:
-                print("Room is full")
+                print("There is currently no living space")
             else:
                 assigned_living_space = random.choice(available_living_spaces)
                 assigned_living_space.occupants.append(person)
-                print ("{0} has been allocated the livingspace {1}".format(
+                person.living_space_allocated = assigned_living_space.room_name
+                print("{0} has been allocated the livingspace {1}".format(
                     person.first_name, assigned_living_space.room_name))
 
     def print_room(self, arg):
-        """ This function prints the names of all people in the stated room name"""
-
+        """The function prints the names of\
+           all people in the stated room name."""
         room_name = arg["<room_name>"]
-        for name in self.rooms:
-            if name == room_name:
-                if len(self.rooms[name].occupants) == 0:
-                    print("Room {0} does not have occupants".format(name))
-                else:
-                    print (self.rooms[name].occupants)
-            else:
-                print("Room {0} doesn't exist".format(name))
+        if room_name in self.office_rooms:
+            office_room_info = self.office_rooms[room_name]
+            print(office_room_info.occupants)
+
+        elif room_name in self.living_rooms:
+            living_room_info = self.living_rooms[room_name]
+            print(living_room_info.occupants)
+
+        else:
+            print("Room does not exist")
 
     def print_allocations(self, arg):
-        """ This function prints a list of all allocated rooms with their members """
+        """The function prints a list of all\
+         allocated rooms with their members."""
         # pdb.set_trace()
         allocation_file = arg["--o"]
-        for name in self.rooms:
-            if len(self.rooms[name].occupants) != 0:
-                if allocation_file == None:
 
-                    print(self.rooms[
-                          name].room_name + "\n---------------------------------------------------------\n" +
-                          str(self.rooms[name].occupants) + "\n")
+        for office_name, office_info in self.office_rooms.items():
+            if len(office_info.occupants) != 0:
+                if allocation_file is None:
+
+                    print(
+                        office_info.room_name + self.divider
+                        + str(office_info.occupants) + "\n")
                 else:
                     result = open(allocation_file + ".txt", "a")
-                    result.write(self.rooms[
-                        name].room_name + "\n---------------------------------------------------------\n" +
-                        str(self.rooms[name].occupants) + "\n")
+                    result.write(
+                        office_info.room_name + self.divider
+                        + str(office_info.occupants) + "\n")
+                    result.close()
+
+        for living_name, living_info in self.living_rooms.items():
+            if len(living_info.occupants) != 0:
+                if allocation_file is None:
+                    print(
+                        living_info.room_name + self.divider
+                        + str(living_info.occupants) + "\n")
+                else:
+                    result = open(allocation_file + ".txt", "a")
+                    result.write(
+                        living_info.room_name + self.divider
+                        + str(living_info.occupants) + "\n")
                     result.close()
 
     def print_unallocated(self, arg):
-        """ This function prints a list of unallocated persons to either the screen or text file"""
+        """ This function prints a list of unallocated\
+        persons to either the screen or text file."""
 
         unallocated_file = arg["--o"]
 
-        for name in self.rooms:
-            for person_name in self.persons:
-                if person_name.upper() not in (self.rooms[name].occupants):
-                    if unallocated_file == None:
-                        print(person_name.upper())
-                    else:
-                        result = open(unallocated_file + ".txt", "a")
-                        result.write(person_name.upper())
-                        result.close()
+        for person_name, person_info in self.persons.items():
+
+            if (person_info.wants_accomodation == "N"
+                    and person_info.office_space_allocated == ""):
+                if unallocated_file is None:
+                    print(person_info)
+                else:
+                    result = open(unallocated_file + ".txt", "a")
+                    result.write("\n"(str(person_info)))
+                    result.close()
+
+            elif (person_info.wants_accomodation == "Y"
+                    and person_info.living_space_allocated == ""):
+                if unallocated_file is None:
+                    print(person_info)
+                else:
+                    result = open(unallocated_file + ".txt", "a")
+                    result.write("\n"(str(person_info)))
+                    result.close()
+            else:
+                print("Everyone has been allocated")
