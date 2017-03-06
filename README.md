@@ -10,7 +10,8 @@ A Python Command Line Interface application for allocating rooms to both fellows
 **
 
 ###Usage
-`dojo_app.py create_room <room_type> <room_name>...
+```
+dojo_app.py create_room <room_type> <room_name>...
 dojo_app.py add_person <first_name> <last_name> <FELLOW/STAFF> [<wants_accomodation>]
 dojo_app.py print_room <room_name>
 dojo_app.py print_allocations [--o=filename]
@@ -20,15 +21,18 @@ dojo_app.py load_people <text_file>
 dojo_app.py -h | --help
 dojo_app.py -V | --version
 dojo_app.py -i | --interactive
-`
+```
+
 ###Running tests
-*Navigate to the project directory
-*Run nosetests testfilename to run test
-**
++ Navigate to the project directory
+
++ Run nosetests testfilename to run test
 
 ###References
 (https://github.com/docopt/docopt)
+
 (http://docopt.org/)
+
 (https://docs.python.org)
 
 ###Author
