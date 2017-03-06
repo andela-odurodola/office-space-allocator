@@ -1,7 +1,6 @@
 
 import unittest
 import sys
-import os
 
 from models.dojo import Dojo
 
@@ -37,6 +36,28 @@ class TestPrintRoom(unittest.TestCase):
         result = sys.stdout.getvalue().split("\n")[-2]
 
         self.assertEqual(result, 'Office room occupants --- [DAMILOLA DURODOLA]')
+
+    def test_that_it_prints_occupants_living_room(self):
+        """It tests."""
+        room_detail = {
+            '<room_type>': 'livingspace',
+            '<room_name>': ['pink']
+        }
+        room = {
+            '<room_name>': 'pink'
+        }
+        person_details = {
+            '<first_name>': 'Bolaji',
+            '<last_name>': 'Adedeji',
+            '<FELLOW/STAFF>': 'fellow',
+            '<wants_accomodation>': 'y'
+        }
+        self.dojo.create_room(room_detail)
+        self.dojo.add_person(person_details)
+        self.dojo.print_room(room)
+        result = sys.stdout.getvalue().split("\n")[-2]
+
+        self.assertEqual(result, 'Living room occupants --- [BOLAJI ADEDEJI]')
 
     def test_for_invalid_room(self):
         """It tests."""

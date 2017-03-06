@@ -102,9 +102,7 @@ class Dojo(object):
                     person.first_name, assigned_living_space.room_name))
 
     def print_room(self, arg):
-        """The function prints the names of
-           all people in the stated room name.
-        """
+        """It prints the names of occupantsstated room name."""
         room_name = arg["<room_name>"]
         if room_name in self.office_rooms:
             office_room_info = self.office_rooms[room_name]
@@ -118,7 +116,7 @@ class Dojo(object):
             if living_room_info.occupants == []:
                 raise Exception("Living room is empty")
             else:
-                print(living_room_info.occupants)
+                print('Living room occupants --- {}'.format(living_room_info.occupants))
         else:
             raise Exception("The room has not been created")
 
