@@ -134,10 +134,10 @@ class Dojo(object):
                         office_info.room_name + self.divider
                         + str(office_info.occupants) + "\n")
                 else:
-                    result = open(allocation_file + ".txt", "a")
+                    result = open(allocation_file + ".txt", "w")
                     result.write(
                         office_info.room_name + self.divider
-                        + str(office_info.occupants) + "\n")
+                        + str(office_info.occupants))
                     result.close()
 
         for living_name, living_info in self.living_rooms.items():
@@ -147,10 +147,10 @@ class Dojo(object):
                         living_info.room_name + self.divider
                         + str(living_info.occupants) + "\n")
                 else:
-                    result = open(allocation_file + ".txt", "a")
+                    result = open(allocation_file + ".txt", "w")
                     result.write(
                         living_info.room_name + self.divider
-                        + str(living_info.occupants) + "\n")
+                        + str(living_info.occupants))
                     result.close()
 
     def print_unallocated(self, arg):
