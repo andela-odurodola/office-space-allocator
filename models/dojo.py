@@ -32,8 +32,7 @@ class Dojo(object):
                     self.living_rooms[room_name] = LivingSpace(room_name)
 
                 else:
-                    raise Exception("Invalid Room Type.\
-                                    Must be office or living")
+                    raise Exception("Invalid Room Type.Must be office or living")
 
                 Prefix = ("A" if room_type.upper() == "LIVINGSPACE" else "An")
                 print("{} {} called {} has been successfully created".format(

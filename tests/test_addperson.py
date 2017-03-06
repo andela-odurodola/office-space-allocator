@@ -61,7 +61,7 @@ class TestAddPerson(unittest.TestCase):
             '<FELLOW/STAFF>': 'fellow',
             '<wants_accomodation>': 'y'
         }
-        
+
         self.dojo.create_room(room_details)
         self.dojo.add_person(person_details)
         list_of_person = [
@@ -119,7 +119,7 @@ class TestAddPerson(unittest.TestCase):
             '<wants_accomodation>': ''
         }
 
-        self.dojo.add_person(person_details)
-
-        self.assertRaises(Exception, self.dojo.add_person(person_details),
-                          person_details)
+        with self.assertRaises(Exception) as result:
+            self.dojo.add_person(person_details)
+        self.assertEqual(str(result.exception),
+                         "Person can only be a fellow or staff")

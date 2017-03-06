@@ -76,9 +76,11 @@ class TestPrintRoom(unittest.TestCase):
         }
         self.dojo.create_room(room_detail)
         self.dojo.add_person(person_details)
-        result = self.dojo.print_room(room)
 
-        self.assertRaises(Exception, result, room)
+        with self.assertRaises(Exception) as result:
+            self.dojo.print_room(room)
+        self.assertEqual(str(result.exception),
+                         "The room has not been created")
 
     def test_for_empty_office_room(self):
         """It tests."""
@@ -91,9 +93,11 @@ class TestPrintRoom(unittest.TestCase):
         }
 
         self.dojo.create_room(room_detail)
-        result = self.dojo.print_room(room)
 
-        self.assertRaises(Exception, result, room)
+        with self.assertRaises(Exception) as result:
+            self.dojo.print_room(room)
+        self.assertEqual(str(result.exception),
+                         "Office room is empty")
 
     def test_for_empty_living_room(self):
         """It tests."""
@@ -106,6 +110,8 @@ class TestPrintRoom(unittest.TestCase):
         }
 
         self.dojo.create_room(room_detail)
-        result = self.dojo.print_room(room)
 
-        self.assertRaises(Exception, result, room)
+        with self.assertRaises(Exception) as result:
+            self.dojo.print_room(room)
+        self.assertEqual(str(result.exception),
+                         "Living room is empty")
