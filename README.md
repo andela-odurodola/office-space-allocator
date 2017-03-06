@@ -1,3 +1,5 @@
+[![Coverage Status](https://coveralls.io/repos/github/andela-odurodola/office-space-allocator/badge.svg?branch=master)](https://coveralls.io/github/andela-odurodola/office-space-allocator?branch=master)
+
 ### Dojo-Room-Allocator
 A Python Command Line Interface application for allocating rooms to both fellows and staffs of Dojo (Andela Kenya facility). It can be used to allocate fellows and staffs to offices or living spaces. Offices and living spaces can be created and Fellows and Staffs can be added to the rooms. Fellows and Staffs are allocated to offices by default, while fellows can choose whether they want a living space or not. Offices can occupy a maximum of six persons while living spaces can occupy a maximum of four persons.
 
