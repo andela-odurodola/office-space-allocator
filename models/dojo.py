@@ -102,22 +102,28 @@ class Dojo(object):
                     person.first_name, assigned_living_space.room_name))
 
     def print_room(self, arg):
-        """The function prints the names of\
-           all people in the stated room name."""
+        """The function prints the names of
+           all people in the stated room name.
+        """
         room_name = arg["<room_name>"]
         if room_name in self.office_rooms:
             office_room_info = self.office_rooms[room_name]
-            print(office_room_info.occupants)
+            if office_room_info.occupants == []:
+                raise Exception("Office room is empty")
+            else:
+                print('Office room occupants --- {}'.format(office_room_info.occupants))
 
         elif room_name in self.living_rooms:
             living_room_info = self.living_rooms[room_name]
-            print(living_room_info.occupants)
-
+            if living_room_info.occupants == []:
+                raise Exception("Living room is empty")
+            else:
+                print(living_room_info.occupants)
         else:
-            print("Room does not exist")
+            raise Exception("The room has not been created")
 
     def print_allocations(self, arg):
-        """The function prints a list of all\
+        """The function prints a list of all
          allocated rooms with their members."""
         # pdb.set_trace()
         allocation_file = arg["--o"]
@@ -150,11 +156,9 @@ class Dojo(object):
                     result.close()
 
     def print_unallocated(self, arg):
-        """ This function prints a list of unallocated\
+        """The function prints a list of unallocated\
         persons to either the screen or text file."""
-
         unallocated_file = arg["--o"]
-
         for person_name, person_info in self.persons.items():
 
             if (person_info.wants_accomodation == "N"
@@ -176,3 +180,103 @@ class Dojo(object):
                     result.close()
             else:
                 print("Everyone has been allocated")
+
+    def reallocate_person(self, arg):
+        """The function reallocates a person with id to a new room."""
+        person_id = arg["<person_identifier>"]
+        new_room_name = arg["<new_room_name>"]
+        # Checks if the person with the id exist in the person dictionary
+
+        if (person_id in self.persons.keys()) and (new_room_name in
+                                                   (self.office_rooms.keys() or self.living_rooms.keys())):
+
+            if (new_room_name == self.persons[person_id].office_space_allocated)\
+                or (new_room_name == self.persons[person_id].\
+                    living_space_allocated):
+                print("Person {} is already a member of room {}".format(
+                    person_id, new_room_name))
+            else:
+                if new_room_name in self.office_rooms.keys():
+                    if (len(self.office_rooms[new_room_name].occupants) < self.
+                            office_rooms[new_room_name].max_occupants):
+                        if self.persons[person_id].office_space_allocated:
+                            old_room_name = self.office_rooms[
+                                self.persons[person_id].office_space_allocated]
+                            old_room_name.occupants.remove(
+                                self.persons[person_id])
+
+                            self.persons[
+                                person_id].office_space_allocated = self.\
+                                office_rooms[new_room_name].room_name
+                            self.office_rooms[new_room_name].occupants.\
+                                append(self.persons[person_id])
+                        else:
+                            self.persons[person_id].office_space_allocated =\
+                                self.office_rooms[new_room_name].room_name
+                            self.office_rooms[new_room_name].occupants.\
+                                append(self.persons[person_id])
+
+                        print("identifier {0} has been reallocated to the office\
+                        {1}".format(person_id, self.persons[person_id].
+                                    office_space_allocated))
+                    else:
+                        print("{} is full".format(new_room_name))
+                else:
+                    if (len(self.living_rooms[new_room_name].occupants) < self.
+                            living_rooms[new_room_name].max_occupants):
+                        if self.persons[person_id].living_space_allocated:
+                            old_room_name = self.living_rooms[
+                                self.persons[person_id].living_space_allocated]
+                            old_room_name.occupants.remove(
+                                self.persons[person_id])
+
+                            self.persons[person_id].living_space_allocated =\
+                                self.living_rooms[new_room_name].room_name
+                            self.living_rooms[new_room_name].occupants.\
+                                append(self.persons[person_id])
+                        else:
+                            self.persons[person_id].living_space_allocated =\
+                             self.living_rooms[new_room_name].room_name
+                            self.living_rooms[new_room_name].occupants.\
+                                append(self.persons[person_id])
+                        print("identifier {0} has been reallocated to\
+                              the livingroom {1}".format(person_id,
+                              self.persons[person_id].living_space_allocated))
+                    else:
+                        print("{} is full".format(new_room_name))
+
+        else:
+            print("Person {} does not exist or room name is invalid"
+                  .format(person_id))
+
+    def load_people(self, arg):
+        """The function adds people to a room from a text file."""
+        name_of_file = arg["<text_file>"]
+
+        with open(name_of_file, "r") as f:
+            people_info = f.readlines()
+
+        for line in people_info:
+            person_info = line.split()
+            if len(person_info) == 4 or len(person_info) == 3:
+                first_name, last_name, rank, wants_accomodation = person_info[
+                    :4]
+                person = {
+                    "<first_name>": first_name,
+                    "<last_name>": last_name,
+                    "<FELLOW/STAFF>": rank,
+                    "<wants_accomodation>": wants_accomodation
+                }
+            elif len(person_info) == 3:
+                first_name, last_name, rank = person_info[
+                    :3]
+                person = {
+                    "<first_name>": first_name,
+                    "<last_name>": last_name,
+                    "<FELLOW/STAFF>": rank,
+                    "<wants_accomodation>": wants_accomodation
+                }
+            else:
+                print ("The information provided is invalid.")
+
+            self.add_person(person)

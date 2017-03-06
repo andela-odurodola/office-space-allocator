@@ -10,6 +10,9 @@ class TestCreateRoom(unittest.TestCase):
     def setUp(self):
         """Set."""
         self.dojo = Dojo()
+        self.dojo.office_rooms = {}
+        self.dojo.living_rooms = {}
+        self.dojo.persons = {}
 
     def test_create_room_office_successfully(self):
         """It tests that room type office is created."""

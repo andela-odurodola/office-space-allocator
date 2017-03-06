@@ -78,7 +78,6 @@ class DojoRoom(cmd.Cmd):
     def do_print_room(self, arg):
         """Usage: print_room <room_name>"""
         self.dojo.print_room(arg)
-        # print(arg)
 
     @docopt_cmd
     def do_print_allocations(self, arg):
