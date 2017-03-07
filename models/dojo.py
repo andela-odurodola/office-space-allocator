@@ -161,22 +161,22 @@ class Dojo(object):
             if (person_info.wants_accomodation == "N"
                     and person_info.office_space_allocated == ""):
                 if unallocated_file is None:
-                    print(person_info)
+                    print("Unallocated persons ----{}".format(person_info))
                 else:
-                    result = open(unallocated_file + ".txt", "a")
-                    result.write("\n"(str(person_info)))
+                    result = open(unallocated_file + ".txt", "w")
+                    result.write("Unallocated persons ----{}".format(person_info))
                     result.close()
 
             elif (person_info.wants_accomodation == "Y"
                     and person_info.living_space_allocated == ""):
                 if unallocated_file is None:
-                    print(person_info)
+                    print("Unallocated persons ----{}".format(person_info))
                 else:
-                    result = open(unallocated_file + ".txt", "a")
-                    result.write("\n"(str(person_info)))
+                    result = open(unallocated_file + ".txt", "w")
+                    result.write("Unallocated persons ----{}".format(person_info))
                     result.close()
             else:
-                print("Everyone has been allocated")
+                raise Exception("Everyone has been allocated")
 
     def reallocate_person(self, arg):
         """The function reallocates a person with id to a new room."""
