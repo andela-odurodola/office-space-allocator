@@ -187,11 +187,12 @@ class Dojo(object):
         if (person_id in self.persons.keys()) and (new_room_name in
                                                    (self.office_rooms.keys() or self.living_rooms.keys())):
 
-            if (new_room_name == self.persons[person_id].office_space_allocated)\
+            if ((new_room_name == self.persons[person_id].office_space_allocated)\
                 or (new_room_name == self.persons[person_id].\
-                    living_space_allocated):
-                print("Person {} is already a member of room {}".format(
+                    living_space_allocated)):
+                print ("Person {} is already a member of room {}".format(
                     person_id, new_room_name))
+                print(person_id)
             else:
                 if new_room_name in self.office_rooms.keys():
                     if (len(self.office_rooms[new_room_name].occupants) < self.
@@ -213,9 +214,9 @@ class Dojo(object):
                             self.office_rooms[new_room_name].occupants.\
                                 append(self.persons[person_id])
 
-                        print("identifier {0} has been reallocated to the office\
-                        {1}".format(person_id, self.persons[person_id].
-                                    office_space_allocated))
+                        print("identifier {0} has been reallocated to the office{1}"
+                              .format(person_id, self.persons[person_id].
+                                      office_space_allocated))
                     else:
                         print("{} is full".format(new_room_name))
                 else:
@@ -243,8 +244,7 @@ class Dojo(object):
                         print("{} is full".format(new_room_name))
 
         else:
-            print("Person {} does not exist or room name is invalid"
-                  .format(person_id))
+            print ("Person {} does not exist or room name is invalid".format(person_id))
 
     def load_people(self, arg):
         """The function adds people to a room from a text file."""
@@ -255,7 +255,7 @@ class Dojo(object):
 
         for line in people_info:
             person_info = line.split()
-            if len(person_info) == 4 or len(person_info) == 3:
+            if len(person_info) == 4:
                 first_name, last_name, rank, wants_accomodation = person_info[
                     :4]
                 person = {
@@ -271,9 +271,7 @@ class Dojo(object):
                     "<first_name>": first_name,
                     "<last_name>": last_name,
                     "<FELLOW/STAFF>": rank,
-                    "<wants_accomodation>": wants_accomodation
+                    "<wants_accomodation>": ''
                 }
-            else:
-                print ("The information provided is invalid.")
 
             self.add_person(person)
