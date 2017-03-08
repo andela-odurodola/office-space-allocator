@@ -52,6 +52,7 @@ class Dojo(object):
 
             print("{0} {1} has been successfully added".format(self.persons[
                 staff_id].rank, self.persons[staff_id]))
+            # print(staff_id)
 
         elif rank.upper() == "FELLOW":
             new_user = Fellow(first_name, last_name,
@@ -61,7 +62,7 @@ class Dojo(object):
 
             print("{0} {1} has been successfully added".format(self.persons[
                 fellow_id].rank, self.persons[fellow_id]))
-
+            # print(fellow_id)
         else:
             raise Exception('Person can only be a fellow or staff')
 
@@ -192,7 +193,7 @@ class Dojo(object):
                     living_space_allocated)):
                 print ("Person {} is already a member of room {}".format(
                     person_id, new_room_name))
-                print(person_id)
+                # print(person_id)
             else:
                 if new_room_name in self.office_rooms.keys():
                     if (len(self.office_rooms[new_room_name].occupants) < self.
@@ -214,7 +215,7 @@ class Dojo(object):
                             self.office_rooms[new_room_name].occupants.\
                                 append(self.persons[person_id])
 
-                        print("identifier {0} has been reallocated to the office{1}"
+                        print("identifier {0} has been reallocated to the office {1}"
                               .format(person_id, self.persons[person_id].
                                       office_space_allocated))
                     else:
@@ -237,9 +238,9 @@ class Dojo(object):
                              self.living_rooms[new_room_name].room_name
                             self.living_rooms[new_room_name].occupants.\
                                 append(self.persons[person_id])
-                        print("identifier {0} has been reallocated to\
-                              the livingroom {1}".format(person_id,
-                              self.persons[person_id].living_space_allocated))
+                        print("identifier {0} has been reallocated to the livingroom {1}"
+                              .format(person_id, self.persons[person_id].
+                                      living_space_allocated))
                     else:
                         print("{} is full".format(new_room_name))
 
