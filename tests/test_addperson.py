@@ -2,8 +2,8 @@
 import unittest
 
 from models.dojo import Dojo
-from models.person.person import Person
 from models.person.fellow import Fellow
+from models.person.person import Person
 from models.person.staff import Staff
 
 
@@ -11,7 +11,7 @@ class TestAddPerson(unittest.TestCase):
     """It tests functionalities for adding and assigning people to room."""
 
     def setUp(self):
-        """set."""
+        """It runs the method prior to each test."""
         self.dojo = Dojo()
         self.dojo.office_rooms = {}
         self.dojo.living_rooms = {}

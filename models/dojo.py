@@ -14,29 +14,24 @@ class Dojo(object):
     persons = {}
     divider = ("\n{}\n".format("-" * 30))
 
-    def __init__(self):
-        pass
-
     def create_room(self, arg):
         """The function creates a new room."""
         room_type = arg["<room_type>"]
         room_names = arg["<room_name>"]
+
         for room_name in room_names:
-            if room_name == ('office' or 'livingspace'):
+            if room_name in ['office', 'livingspace']:
                 raise Exception("This is not a valid room name")
             else:
                 if room_type.upper() == "OFFICE":
                     self.office_rooms[room_name] = Office(room_name)
-
                 elif room_type.upper() == "LIVINGSPACE":
                     self.living_rooms[room_name] = LivingSpace(room_name)
-
                 else:
                     raise Exception("Invalid Room Type.Must be office or living")
-
-                Prefix = ("A" if room_type.upper() == "LIVINGSPACE" else "An")
+                prefix = "A" if room_type.upper() == "LIVINGSPACE" else "An"
                 print("{} {} called {} has been successfully created".format(
-                    Prefix, room_type, room_name))
+                    prefix, room_type, room_name))
 
     def add_person(self, arg):
         """The function adds a person to a room randomly."""
@@ -49,20 +44,15 @@ class Dojo(object):
             new_user = Staff(first_name, last_name)
             staff_id = "S" + str(new_user.id)
             self.persons[staff_id] = new_user
-
             print("{0} {1} has been successfully added".format(self.persons[
                 staff_id].rank, self.persons[staff_id]))
-            # print(staff_id)
-
         elif rank.upper() == "FELLOW":
             new_user = Fellow(first_name, last_name,
                               wants_accomodation.upper())
             fellow_id = "F" + str(new_user.id)
             self.persons[fellow_id] = new_user
-
             print("{0} {1} has been successfully added".format(self.persons[
                 fellow_id].rank, self.persons[fellow_id]))
-            # print(fellow_id)
         else:
             raise Exception('Person can only be a fellow or staff')
 
@@ -88,7 +78,6 @@ class Dojo(object):
             person.office_space_allocated = assigned_office_space.room_name
             print("{0} has been allocated the office {1}".format(
                 person.first_name, assigned_office_space.room_name))
-
         if person.wants_accomodation.upper() == "Y":
             available_living_spaces = self.get_available_room_spaces(
                 self.living_rooms)
@@ -110,7 +99,6 @@ class Dojo(object):
                 raise Exception("Office room is empty")
             else:
                 print('Office room occupants --- {}'.format(office_room_info.occupants))
-
         elif room_name in self.living_rooms:
             living_room_info = self.living_rooms[room_name]
             if living_room_info.occupants == []:
@@ -123,35 +111,28 @@ class Dojo(object):
     def print_allocations(self, arg):
         """The function prints a list of all
          allocated rooms with their members."""
-        # pdb.set_trace()
         allocation_file = arg["--o"]
 
         for office_name, office_info in self.office_rooms.items():
             if len(office_info.occupants) != 0:
                 if allocation_file is None:
-
                     print(
                         office_info.room_name + self.divider
                         + str(office_info.occupants) + "\n")
                 else:
-                    result = open(allocation_file + ".txt", "w")
-                    result.write(
-                        office_info.room_name + self.divider
-                        + str(office_info.occupants))
-                    result.close()
+                    with open(allocation_file + ".txt", "w") as result:
+                        result.write(office_info.room_name + self.divider
+                                     + str(office_info.occupants))
 
         for living_name, living_info in self.living_rooms.items():
             if len(living_info.occupants) != 0:
                 if allocation_file is None:
-                    print(
-                        living_info.room_name + self.divider
-                        + str(living_info.occupants) + "\n")
+                    print(living_info.room_name + self.divider
+                          + str(living_info.occupants) + "\n")
                 else:
-                    result = open(allocation_file + ".txt", "w")
-                    result.write(
-                        living_info.room_name + self.divider
-                        + str(living_info.occupants))
-                    result.close()
+                    with open(allocation_file + ".txt", "w") as result:
+                        result.write(living_info.room_name + self.divider
+                                     + str(living_info.occupants))
 
     def print_unallocated(self, arg):
         """The function prints a list of unallocated\
