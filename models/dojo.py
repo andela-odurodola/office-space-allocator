@@ -1,6 +1,10 @@
+#!/usr/local/bin/python3
+import os
 import random
 
-from database_model.database_states import DatabaseManager
+
+from database_model.database_states import DatabaseManager, OfficeRooms,\
+                                            LivingRooms, Persons
 from models.room.living_space import LivingSpace
 from models.room.office_space import Office
 from models.person.fellow import Fellow
@@ -137,8 +141,10 @@ class Dojo(object):
                                      + str(living_info.occupants))
 
     def print_unallocated(self, arg):
-        """The function prints a list of unallocated\
-        persons to either the screen or text file."""
+        """
+        The function prints a list of unallocated
+        persons to either the screen or text file.
+        """
         unallocated_file = arg["--o"]
         for person_name, person_info in self.persons.items():
 
@@ -257,3 +263,50 @@ class Dojo(object):
                 }
 
             self.add_person(person)
+
+    def save_state(self, arg):
+        """It saves all data into an sqlite database."""
+        database_name = arg["--db"]
+
+        if database_name is None:
+            database_name = 'database_model/dojo.db'
+        else:
+            database_name = 'database_model/' + database_name + '.db'
+
+        database = DatabaseManager(database_name)
+        database_session = database.Session()
+
+        officespace_details = OfficeRooms(room_info=self.office_rooms)
+        database_session.add(officespace_details)
+        database_session.commit()
+
+        livingspace_details = LivingRooms(livingspace_info=self.living_rooms)
+        database_session.add(livingspace_details)
+        database_session.commit()
+
+        persons_details = Persons(person_info=self.persons)
+        database_session.add(persons_details)
+        database_session.commit()
+
+    def load_state(self, arg):
+        """It loads saved data from the database specified."""
+        database_file = arg["<sqlite_database>"]
+        path = 'database_model/' + database_file
+        if os.path.exists(path):
+
+            database = DatabaseManager(path)
+            database_session = database.Session()
+
+            for row in database_session.query(OfficeRooms):
+                self.office_rooms = row.room_info
+                print(self.office_rooms)
+
+            for row in database_session.query(LivingRooms):
+                self.living_rooms = row.livingspace_info
+                print(self.living_rooms)
+
+            for row in database_session.query(Persons):
+                self.persons = row.person_info
+                print(self.persons)
+        else:
+            raise Exception("File does not exist.")

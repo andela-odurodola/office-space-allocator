@@ -1,10 +1,7 @@
-
+#!/usr/local/bin/python3
 import unittest
 
 from models.dojo import Dojo
-from models.person.fellow import Fellow
-from models.person.person import Person
-from models.person.staff import Staff
 
 
 class TestAddPerson(unittest.TestCase):
@@ -25,7 +22,7 @@ class TestAddPerson(unittest.TestCase):
             '<FELLOW/STAFF>': 'staff',
             '<wants_accomodation>': ''
         }
-
+        
         self.dojo.add_person(person_details)
         list_of_person = [
             person_info.full_name for person_id,

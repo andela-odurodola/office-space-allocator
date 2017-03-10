@@ -67,7 +67,6 @@ class DojoRoom(cmd.Cmd):
     prompt = '(Dojo) '
     file = None
     dojo = Dojo()
-    db_manager = DatabaseManager()
 
     @docopt_cmd
     def do_create_room(self, arg):
@@ -109,7 +108,7 @@ class DojoRoom(cmd.Cmd):
     @docopt_cmd
     def do_save_state(self, arg):
         """Usage: save_state [--db=sqlite_database]"""
-        self.dojo.save_state()
+        self.dojo.save_state(arg)
 
     @docopt_cmd
     def do_load_state(self, arg):

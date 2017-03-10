@@ -22,13 +22,13 @@ class DatabaseManager(object):
 class OfficeRooms(Base):
     """Mapped Office class with it's table."""
 
-    __tablename__ = 'office_rooms'
+    __tablename__ = 'office_room'
 
     room_id = Column(Integer, primary_key=True)
     room_info = Column(PickleType)
 
 
-class LivingSpace(Base):
+class LivingRooms(Base):
     """Mapped Livingspace class with it's table."""
 
     __tablename__ = 'living_space'
@@ -40,7 +40,7 @@ class LivingSpace(Base):
 class Persons(Base):
     """Mapped Person dictionary with it's table."""
 
-    __tablename__ = 'persons'
+    __tablename__ = 'person'
 
     persons_id = Column(Integer, primary_key=True)
     person_info = Column(PickleType)
