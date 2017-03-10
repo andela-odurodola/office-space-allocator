@@ -1,3 +1,4 @@
+#!/usr/local/bin/python3
 """
 This Application automatically allocated spaces to people at random
 Usage:
@@ -8,6 +9,8 @@ Usage:
     dojo_app.py print_unallocated [--o=filename]
     dojo_app.py reallocate_person <person_identifier> <new_room_name>​
     dojo_app.py load_people <text_file>
+    dojo_app.py save_state [--db=sqlite_database]
+    dojo_app.py load_state <sqlite_database>
     dojo_app.py -h | --help
     dojo_app.py -V | --version
     dojo_app.py -i | --interactive
@@ -22,6 +25,7 @@ Options:
 """
 import sys
 import cmd
+from database_model.database_states import DatabaseManager
 from docopt import docopt, DocoptExit
 from models.dojo import Dojo
 
@@ -63,6 +67,7 @@ class DojoRoom(cmd.Cmd):
     prompt = '(Dojo) '
     file = None
     dojo = Dojo()
+    db_manager = DatabaseManager()
 
     @docopt_cmd
     def do_create_room(self, arg):
@@ -100,6 +105,16 @@ class DojoRoom(cmd.Cmd):
     def do_load_people(self, arg):
         """Usage: load_people <text_file>"""
         self.dojo.load_people(arg)
+
+    @docopt_cmd
+    def do_save_state(self, arg):
+        """Usage: save_state [--db=sqlite_database]"""
+        self.dojo.save_state()
+
+    @docopt_cmd
+    def do_load_state(self, arg):
+        """Usage: load_state <sqlite_database>"""
+        self.dojo.load_state(arg)
 
     def do_q(self, arg):
         """Quits out of Interactive Mode."""

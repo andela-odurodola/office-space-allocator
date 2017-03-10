@@ -1,7 +1,8 @@
 import random
 
-from models.room.office_space import Office
+from database_model.database_states import DatabaseManager
 from models.room.living_space import LivingSpace
+from models.room.office_space import Office
 from models.person.fellow import Fellow
 from models.person.staff import Staff
 
@@ -60,10 +61,10 @@ class Dojo(object):
 
     @staticmethod
     def get_available_room_spaces(room_spaces):
-        available_room_spaces = []
-        for room, room_info in room_spaces.items():
-            if (len(room_info.occupants) < room_info.max_occupants):
-                available_room_spaces.append(room_info)
+        """It gets a list of available rooms for allocation."""
+        available_room_spaces = [room_info for room_info in room_spaces.
+                                 values() if (len(room_info.occupants) <
+                                              room_info.max_occupants)]
         return available_room_spaces
 
     def assign_person(self, person):
@@ -78,6 +79,7 @@ class Dojo(object):
             person.office_space_allocated = assigned_office_space.room_name
             print("{0} has been allocated the office {1}".format(
                 person.first_name, assigned_office_space.room_name))
+
         if person.wants_accomodation.upper() == "Y":
             available_living_spaces = self.get_available_room_spaces(
                 self.living_rooms)
@@ -164,7 +166,6 @@ class Dojo(object):
         """The function reallocates a person with id to a new room."""
         person_id = arg["<person_identifier>"]
         new_room_name = arg["<new_room_name>"]
-        # Checks if the person with the id exist in the person dictionary
 
         if (person_id in self.persons.keys()) and (new_room_name in
                                                    (self.office_rooms.keys() or self.living_rooms.keys())):
@@ -174,7 +175,6 @@ class Dojo(object):
                     living_space_allocated)):
                 print ("Person {} is already a member of room {}".format(
                     person_id, new_room_name))
-                # print(person_id)
             else:
                 if new_room_name in self.office_rooms.keys():
                     if (len(self.office_rooms[new_room_name].occupants) < self.
