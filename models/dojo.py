@@ -26,14 +26,14 @@ class Dojo(object):
 
         for room_name in room_names:
             if room_name in ['office', 'livingspace']:
-                raise Exception("This is not a valid room name")
+                raise ValueError("This is not a valid room name")
             else:
                 if room_type.upper() == "OFFICE":
                     self.office_rooms[room_name] = Office(room_name)
                 elif room_type.upper() == "LIVINGSPACE":
                     self.living_rooms[room_name] = LivingSpace(room_name)
                 else:
-                    raise Exception("Invalid Room Type.Must be office or living")
+                    raise ValueError("Invalid Room Type.Must be office or living")
                 prefix = "A" if room_type.upper() == "LIVINGSPACE" else "An"
                 print("{} {} called {} has been successfully created".format(
                     prefix, room_type, room_name))
@@ -75,15 +75,14 @@ class Dojo(object):
         """The function randomly assigns a person to a room."""
         available_office_spaces = self.get_available_room_spaces(
             self.office_rooms)
-        if available_office_spaces == []:
-            print("There is currently no office space")
-        else:
+        if available_office_spaces:
             assigned_office_space = random.choice(available_office_spaces)
             assigned_office_space.occupants.append(person)
             person.office_space_allocated = assigned_office_space.room_name
             print("{0} has been allocated the office {1}".format(
                 person.first_name, assigned_office_space.room_name))
-
+        else:
+            print("There is currently no office space")
         if person.wants_accomodation.upper() == "Y":
             available_living_spaces = self.get_available_room_spaces(
                 self.living_rooms)
@@ -120,7 +119,7 @@ class Dojo(object):
         allocation_file = arg["--o"]
 
         for office_name, office_info in self.office_rooms.items():
-            if len(office_info.occupants) != 0:
+            if office_info.occupants:
                 if allocation_file is None:
                     print(
                         office_info.room_name + self.divider
@@ -153,20 +152,17 @@ class Dojo(object):
                 if unallocated_file is None:
                     print("Unallocated persons ----{}".format(person_info))
                 else:
-                    result = open(unallocated_file + ".txt", "w")
-                    result.write("Unallocated persons ----{}".format(person_info))
-                    result.close()
-
+                    with open(unallocated_file + ".txt", "w") as result:
+                        result.write("Unallocated persons ----{}".format(person_info))
             elif (person_info.wants_accomodation == "Y"
                     and person_info.living_space_allocated == ""):
                 if unallocated_file is None:
                     print("Unallocated persons ----{}".format(person_info))
                 else:
-                    result = open(unallocated_file + ".txt", "w")
-                    result.write("Unallocated persons ----{}".format(person_info))
-                    result.close()
+                    with open(unallocated_file + ".txt", "w") as result:
+                        result.write("Unallocated persons ----{}".format(person_info))
             else:
-                raise Exception("Everyone has been allocated")
+                print ("Everyone has been allocated")
 
     def reallocate_person(self, arg):
         """The function reallocates a person with id to a new room."""
@@ -243,6 +239,7 @@ class Dojo(object):
 
         for line in people_info:
             person_info = line.split()
+            # import pdb; pdb.set_trace()
             if len(person_info) == 4:
                 first_name, last_name, rank, wants_accomodation = person_info[
                     :4]

@@ -23,9 +23,9 @@ Options:
 
 
 """
-import sys
 import cmd
-from database_model.database_states import DatabaseManager
+import sys
+
 from docopt import docopt, DocoptExit
 from models.dojo import Dojo
 
@@ -65,7 +65,6 @@ def docopt_cmd(func):
 class DojoRoom(cmd.Cmd):
     """Welcome to the Dojo Room App!"""
     prompt = '(Dojo) '
-    file = None
     dojo = Dojo()
 
     @docopt_cmd

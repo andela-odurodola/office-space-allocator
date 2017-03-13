@@ -10,25 +10,24 @@ class TestAddPerson(unittest.TestCase):
     def setUp(self):
         """It runs the method prior to each test."""
         self.dojo = Dojo()
-        self.dojo.office_rooms = {}
-        self.dojo.living_rooms = {}
-        self.dojo.persons = {}
-
-    def test_add_person_staff_succesfully(self):
-        """It tests if person who is a staff is created successfully."""
-        person_details = {
+        self.staff_details = {
             '<first_name>': 'Damilola',
             '<last_name>': 'Durodola',
             '<FELLOW/STAFF>': 'staff',
             '<wants_accomodation>': ''
         }
+        self.dojo.office_rooms = {}
+        self.dojo.living_rooms = {}
+        self.dojo.persons = {}
         
-        self.dojo.add_person(person_details)
-        list_of_person = [
-            person_info.full_name for person_id,
-            person_info in self.dojo.persons.items()]
+    def test_add_person_staff_succesfully(self):
+        """It tests if person who is a staff is created successfully."""
+        self.dojo.add_person(self.staff_details)
+        person_names = [
+            person_info.full_name for person_info in
+            self.dojo.persons.values()]
 
-        self.assertTrue('Damilola Durodola' in list_of_person)
+        self.assertTrue('Damilola Durodola' in person_names)
 
     def test_add_person_fellow_succesfully(self):
         """It tests if person who is a fellow is created successfully."""

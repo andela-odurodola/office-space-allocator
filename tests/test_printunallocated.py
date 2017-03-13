@@ -15,6 +15,11 @@ class TestPrintUnallocated(unittest.TestCase):
         self.dojo.living_rooms = {}
         self.dojo.persons = {}
 
+    def tearDown(self):
+        self.dojo.office_rooms = {}
+        self.dojo.living_rooms = {}
+        self.dojo.persons = {}
+
     def test_print_unallocated_without_acccomodation(self):
         """."""
         person_details = {
@@ -119,8 +124,8 @@ class TestPrintUnallocated(unittest.TestCase):
 
         self.dojo.create_room(room_detail)
         self.dojo.add_person(person_details)
+        self.dojo.print_unallocated(allocate_file)
+        result = sys.stdout.getvalue().split("\n")[3]
 
-        with self.assertRaises(Exception) as result:
-            self.dojo.print_unallocated(allocate_file)
-        self.assertEqual(str(result.exception),
+        self.assertEqual(result,
                          "Everyone has been allocated")

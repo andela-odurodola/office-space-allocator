@@ -14,6 +14,11 @@ class TestLoadPeople(unittest.TestCase):
         self.dojo.living_rooms = {}
         self.dojo.persons = {}
 
+    def tearDown(self):
+        self.dojo.office_rooms = {}
+        self.dojo.living_rooms = {}
+        self.dojo.persons = {}
+
     def test_load_staff_successfully(self):
         """It tests for staff."""
         staff_details = {

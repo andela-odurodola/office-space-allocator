@@ -37,7 +37,7 @@ class TestCreateRoom(unittest.TestCase):
             '<room_name>': test_rooms
         }
 
-        with self.assertRaises(Exception) as result:
+        with self.assertRaises(ValueError) as result:
             self.dojo.create_room(room_details)
         self.assertEqual(str(result.exception),
                          "Invalid Room Type.Must be office or living")
@@ -49,7 +49,7 @@ class TestCreateRoom(unittest.TestCase):
             '<room_name>': ['office', 'livingspace']
         }
 
-        with self.assertRaises(Exception) as result:
+        with self.assertRaises(ValueError) as result:
             self.dojo.create_room(room_details)
         self.assertEqual(str(result.exception),
                          "This is not a valid room name")
