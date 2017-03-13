@@ -30,10 +30,11 @@ class TestSaveState(unittest.TestCase):
         self.dojo.add_person(self.person_details)
         self.dojo.save_state(self.data)
 
-        database = DatabaseManager('database_model/test.db')
+        database = DatabaseManager('database_model/room.db')
         database_session = database.Session()
 
         for row in database_session.query(Persons):
             saved_data = row.person_info
             database_id = list(saved_data)[0]
             self.assertEqual(database_id, 'S1')
+        os.remove('database_model/room.db')
