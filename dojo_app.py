@@ -124,5 +124,3 @@ opt = docopt(__doc__, sys.argv[1:])
 
 if opt['--interactive']:
     DojoRoom().cmdloop()
-
-# print(opt)
