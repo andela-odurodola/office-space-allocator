@@ -1,0 +1,37 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+DocoptExit	dojo_app.py	/^from docopt import docopt, DocoptExit$/;"	kind:namespace	line:21
+Dojo	dojo_app.py	/^from models.dojo import Dojo$/;"	kind:namespace	line:22
+Dojo	models/dojo.py	/^class Dojo(object):$/;"	kind:class	line:2
+DojoRoom	dojo_app.py	/^class DojoRoom(cmd.Cmd):$/;"	kind:class	line:57
+Person	models/person.py	/^class Person(Dojo):$/;"	kind:class	line:2
+Room	models/room.py	/^class Room(Dojo):$/;"	kind:class	line:2
+__init__	models/person.py	/^    def __init__(self,arg):$/;"	kind:member	line:3
+__init__	models/room.py	/^	def __init__(self, arg):$/;"	kind:member	line:7
+__init__.py	models/__init__.py	1;"	kind:file	line:1
+add_person	models/dojo.py	/^    def add_person(self, arg):$/;"	kind:member	line:21
+cmd	dojo_app.py	/^import cmd$/;"	kind:namespace	line:20
+create_room	models/dojo.py	/^    def create_room(self, arg):$/;"	kind:member	line:13
+do_add_person	dojo_app.py	/^    def do_add_person(self, arg):$/;"	kind:member	line:68
+do_create_room	dojo_app.py	/^    def do_create_room(self, arg):$/;"	kind:member	line:63
+do_quit	dojo_app.py	/^    def do_quit(self, arg):$/;"	kind:member	line:72
+docopt	dojo_app.py	/^from docopt import docopt, DocoptExit$/;"	kind:namespace	line:21
+docopt_cmd	dojo_app.py	/^def docopt_cmd(func):$/;"	kind:function	line:25
+dojo.py	models/dojo.py	1;"	kind:file	line:1
+dojo_app.py	dojo_app.py	1;"	kind:file	line:1
+fellow	models/person.py	/^    def fellow(self,arg):$/;"	kind:member	line:9
+file	dojo_app.py	/^    file = None$/;"	kind:variable	line:60
+fn	dojo_app.py	/^    def fn(self, arg):$/;"	kind:function	line:31
+livingSpace	models/room.py	/^  	def livingSpace(self,arg):$/;"	kind:function	line:12
+officeSpace	models/room.py	/^	def officeSpace(self,arg):$/;"	kind:member	line:18
+opt	dojo_app.py	/^opt = docopt(__doc__, sys.argv[1:])$/;"	kind:variable	line:76
+person.py	models/person.py	1;"	kind:file	line:1
+prompt	dojo_app.py	/^    prompt = '(Dojo) '$/;"	kind:variable	line:59
+room.py	models/room.py	1;"	kind:file	line:1
+roomCount	models/room.py	/^	roomCount = 0$/;"	kind:variable	line:5
+staff	models/person.py	/^    def staff(self,arg):$/;"	kind:member	line:11
+sys	dojo_app.py	/^import sys$/;"	kind:namespace	line:19
