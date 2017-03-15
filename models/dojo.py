@@ -161,8 +161,8 @@ class Dojo(object):
                 else:
                     with open(unallocated_file + ".txt", "w") as result:
                         result.write("Unallocated persons ----{}".format(person_info))
-            else:
-                print ("Everyone has been allocated")
+        else:
+            print ("Everyone has been allocated")
 
     def reallocate_person(self, arg):
         """The function reallocates a person with id to a new room."""
@@ -239,7 +239,7 @@ class Dojo(object):
 
         for line in people_info:
             person_info = line.split()
-            # import pdb; pdb.set_trace()
+            
             if len(person_info) == 4:
                 first_name, last_name, rank, wants_accomodation = person_info[
                     :4]
