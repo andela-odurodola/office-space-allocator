@@ -2,9 +2,25 @@
 
 
 class Room(object):
-    """It defines the room class."""
 
     def __init__(self, room_name):
-        """Constructor for room class."""
         self.room_name = room_name
         self.occupants = []
+
+
+class Office(Room):
+    # Inheriting from room class
+
+    def __init__(self, room_name):
+        super().__init__(room_name)
+        self.room_type = "OFFICE"
+        self.max_occupants = 6
+
+
+class LivingSpace(Room):
+    # Inheriting from room class
+
+    def __init__(self, room_name):
+        super().__init__(room_name)
+        self.room_type = "LIVINGSPACE"
+        self.max_occupants = 4

@@ -1,7 +1,6 @@
 #!/usr/local/bin/python3
 
-from sqlalchemy import create_engine
-from sqlalchemy import Column, Integer, PickleType
+from sqlalchemy import Column, create_engine, Integer, PickleType
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -15,7 +14,7 @@ class DatabaseManager(object):
         """Constructor function for the class."""
         self.db_name = db_name
         self.engine = create_engine('sqlite:///' + self.db_name, echo=False)
-        self.Session = sessionmaker(bind=self.engine)
+        self.session = sessionmaker(bind=self.engine)
         Base.metadata.create_all(self.engine)
 
 

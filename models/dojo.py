@@ -1,117 +1,113 @@
 #!/usr/local/bin/python3
 import os
 import random
+import sys
 
+from os import path
+
+
+sys.path.append(os.path.join(path.dirname(path.abspath(__file__))))
 
 from database_model.database_states import DatabaseManager, OfficeRooms,\
                                             LivingRooms, Persons
-from models.room.living_space import LivingSpace
-from models.room.office_space import Office
-from models.person.fellow import Fellow
-from models.person.staff import Staff
+from person.person import Fellow, Person, Staff
+from room.room import LivingSpace, Office, Room
+
 
 
 class Dojo(object):
-    """The Dojo class."""
 
-    office_rooms = {}
-    living_rooms = {}
-    persons = {}
+    office_rooms = []
+    living_rooms = []
+    persons = []
     divider = ("\n{}\n".format("-" * 30))
 
-    def create_room(self, arg):
-        """The function creates a new room."""
-        room_type = arg["<room_type>"]
-        room_names = arg["<room_name>"]
+    def create_room(self, room_type, room_names):
+        # The function creates a new room.
+
+        if not (room_type.upper() in ["OFFICE", "LIVINGSPACE"]):
+            raise ValueError("Invalid Room Type. Must be office or living")
 
         for room_name in room_names:
-            if room_name in ['office', 'livingspace']:
-                raise ValueError("This is not a valid room name")
+            if room_name in self.get_all_rooms():
+                print("The room {} exists. Try again".format(room_name))
             else:
                 if room_type.upper() == "OFFICE":
-                    self.office_rooms[room_name] = Office(room_name)
+                    self.office_rooms.append(Office(room_name))
                 elif room_type.upper() == "LIVINGSPACE":
-                    self.living_rooms[room_name] = LivingSpace(room_name)
-                else:
-                    raise ValueError("Invalid Room Type.Must be office or living")
+                    self.living_rooms.append(LivingSpace(room_name))
                 prefix = "A" if room_type.upper() == "LIVINGSPACE" else "An"
                 print("{} {} called {} has been successfully created".format(
                     prefix, room_type, room_name))
 
-    def add_person(self, arg):
-        """The function adds a person to a room randomly."""
-        first_name = arg["<first_name>"]
-        last_name = arg["<last_name>"]
-        rank = (arg["<FELLOW/STAFF>"])
-        wants_accomodation = (arg["<wants_accomodation>"] or "N")
+    def get_all_rooms(self):
+        return [room.room_name for room in self.living_rooms + self.office_rooms]
 
+    def add_person(self, first_name, last_name, rank, wants_accomodation):
+        # The function adds a person to a room randomly
         if rank.upper() == "STAFF":
             new_user = Staff(first_name, last_name)
-            staff_id = "S" + str(new_user.id)
-            self.persons[staff_id] = new_user
-            print("{0} {1} has been successfully added".format(self.persons[
-                staff_id].rank, self.persons[staff_id]))
+
         elif rank.upper() == "FELLOW":
             new_user = Fellow(first_name, last_name,
-                              wants_accomodation.upper())
-            fellow_id = "F" + str(new_user.id)
-            self.persons[fellow_id] = new_user
-            print("{0} {1} has been successfully added".format(self.persons[
-                fellow_id].rank, self.persons[fellow_id]))
+                              wants_accomodation)
         else:
             raise Exception('Person can only be a fellow or staff')
 
+        self.persons.append(new_user)
+        print("{0} {1} has been successfully added".format(new_user.rank, new_user))
         self.assign_person(new_user)
 
     @staticmethod
     def get_available_room_spaces(room_spaces):
-        """It gets a list of available rooms for allocation."""
-        available_room_spaces = [room_info for room_info in room_spaces.
-                                 values() if (len(room_info.occupants) <
-                                              room_info.max_occupants)]
+        # It gets a list of available rooms for allocation
+        available_room_spaces = [room for room in room_spaces if (len(room.occupants) <
+                                              room.max_occupants)]
         return available_room_spaces
 
+    @staticmethod
+    def assign_space_to_person(room_spaces, person, flag=None):
+        # It randomly choose an available room
+        key_map = {"OFFICE": person.office_space_allocated,
+                   "LIVINGSPACE": person.living_space_allocated}
+        available_space = random.choice(room_spaces)
+        available_space.occupants.append(person)
+        key_map[available_space.room_type] = available_space
+        print("{0} has been allocated the {1} {2}".format(
+            person.first_name, available_space.room_type.lower(), available_space.room_name))
+
     def assign_person(self, person):
-        """The function randomly assigns a person to a room."""
+        # The function randomly assigns a person to a room.
         available_office_spaces = self.get_available_room_spaces(
             self.office_rooms)
         if available_office_spaces:
-            assigned_office_space = random.choice(available_office_spaces)
-            assigned_office_space.occupants.append(person)
-            person.office_space_allocated = assigned_office_space.room_name
-            print("{0} has been allocated the office {1}".format(
-                person.first_name, assigned_office_space.room_name))
+            self.assign_space_to_person(available_office_spaces, person)
         else:
             print("There is currently no office space")
-        if person.wants_accomodation.upper() == "Y":
+
+        flag = person.wants_accomodation
+        if flag == 'y':
             available_living_spaces = self.get_available_room_spaces(
                 self.living_rooms)
-            if available_living_spaces == []:
+            if available_living_spaces:
+                self.assign_space_to_person(available_living_spaces, person, flag='y')
+            else:
                 print("There is currently no living space")
-            else:
-                assigned_living_space = random.choice(available_living_spaces)
-                assigned_living_space.occupants.append(person)
-                person.living_space_allocated = assigned_living_space.room_name
-                print("{0} has been allocated the livingspace {1}".format(
-                    person.first_name, assigned_living_space.room_name))
 
-    def print_room(self, arg):
-        """It prints the names of occupantsstated room name."""
-        room_name = arg["<room_name>"]
-        if room_name in self.office_rooms:
-            office_room_info = self.office_rooms[room_name]
-            if office_room_info.occupants == []:
-                raise Exception("Office room is empty")
-            else:
-                print('Office room occupants --- {}'.format(office_room_info.occupants))
-        elif room_name in self.living_rooms:
-            living_room_info = self.living_rooms[room_name]
-            if living_room_info.occupants == []:
-                raise Exception("Living room is empty")
-            else:
-                print('Living room occupants --- {}'.format(living_room_info.occupants))
+    def get_room_occupants(self, room_name):
+        # It returns a list of both room occupants
+        room_occupants, = [room.occupants for room in self.office_rooms +
+                           self.living_rooms if room.room_name.lower() == room_name.lower()]
+        return room_occupants
+
+    def print_room(self, room_name):
+        if not(room_name in self.get_all_rooms()):
+            raise ValueError("The room {} has not been created".format(room_name))
+        room_occupants = self.get_room_occupants(room_name)
+        if room_occupants:
+            print('Office room occupants --- {}'.format(room_occupants))
         else:
-            raise Exception("The room has not been created")
+            print("The room {} is empty".format(room_name))
 
     def print_allocations(self, arg):
         """The function prints a list of all
@@ -239,7 +235,7 @@ class Dojo(object):
 
         for line in people_info:
             person_info = line.split()
-            
+
             if len(person_info) == 4:
                 first_name, last_name, rank, wants_accomodation = person_info[
                     :4]
@@ -271,7 +267,7 @@ class Dojo(object):
             database_name = 'database_model/' + database_name + '.db'
 
         database = DatabaseManager(database_name)
-        database_session = database.Session()
+        database_session = database.session()
 
         officespace_details = OfficeRooms(room_info=self.office_rooms)
         database_session.add(officespace_details)
@@ -292,7 +288,7 @@ class Dojo(object):
         if os.path.exists(path):
 
             database = DatabaseManager(path)
-            database_session = database.Session()
+            database_session = database.session()
 
             for row in database_session.query(OfficeRooms):
                 self.office_rooms = row.room_info
