@@ -12,9 +12,9 @@ class TestAddPerson(unittest.TestCase):
         self.dojo = Dojo()
 
     def tearDown(self):
-        self.dojo.office_rooms = []
-        self.dojo.living_rooms = []
-        self.dojo.persons = []
+        Dojo.office_rooms = []
+        Dojo.living_rooms = []
+        Dojo.persons = []
 
     def test_add_person_staff_succesfully(self):
         # It tests if person who is a staff is created successfully

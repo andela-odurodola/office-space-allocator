@@ -92,12 +92,12 @@ class DojoRoom(cmd.Cmd):
     @docopt_cmd
     def do_print_allocations(self, arg):
         """Usage: print_allocations [--o=filename]"""
-        self.dojo.print_allocations(arg['--o=filename'])
+        self.dojo.print_allocations(arg['--o'])
 
     @docopt_cmd
     def do_print_unallocated(self, arg):
         """Usage: print_unallocated [--o=filename]"""
-        self.dojo.print_unallocated(arg['--o=filename'])
+        self.dojo.print_unallocated(arg['--o'])
 
     @docopt_cmd
     def do_reallocate_person(self, arg):

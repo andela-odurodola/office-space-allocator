@@ -6,112 +6,49 @@ from models.dojo import Dojo
 
 
 class TestPrintRoom(unittest.TestCase):
-    """It tests for the functionality print room."""
+    # It tests for the functionality print room
 
     def setUp(self):
-        """sets."""
         self.dojo = Dojo()
-        self.dojo.office_rooms = {}
-        self.dojo.living_rooms = {}
-        self.dojo.persons = {}
+
+    def tearDown(self):
+        Dojo.office_rooms = []
+        Dojo.living_rooms = []
+        Dojo.persons = []
 
     def test_that_it_prints_occupants_officeroom(self):
-        """It tests."""
-        room_detail = {
-            '<room_type>': 'office',
-            '<room_name>': ['green']
-        }
-        room = {
-            '<room_name>': 'green'
-        }
-        person_details = {
-            '<first_name>': 'Damilola',
-            '<last_name>': 'Durodola',
-            '<FELLOW/STAFF>': 'staff',
-            '<wants_accomodation>': ''
-        }
-        self.dojo.create_room(room_detail)
-        self.dojo.add_person(person_details)
-        self.dojo.print_room(room)
+        self.dojo.create_room('office', ['purple'])
+        self.dojo.add_person('Bola', 'Kola', 'staff', '')
+        self.dojo.print_room('purple')
         result = sys.stdout.getvalue().split("\n")[-2]
 
-        self.assertEqual(result, 'Office room occupants --- [DAMILOLA DURODOLA]')
+        self.assertEqual(result, 'Room occupants --- [BOLA KOLA]')
 
     def test_that_it_prints_occupants_living_room(self):
-        """It tests."""
-        room_detail = {
-            '<room_type>': 'livingspace',
-            '<room_name>': ['pink']
-        }
-        room = {
-            '<room_name>': 'pink'
-        }
-        person_details = {
-            '<first_name>': 'Bolaji',
-            '<last_name>': 'Adedeji',
-            '<FELLOW/STAFF>': 'fellow',
-            '<wants_accomodation>': 'y'
-        }
-        self.dojo.create_room(room_detail)
-        self.dojo.add_person(person_details)
-        self.dojo.print_room(room)
-        result = sys.stdout.getvalue().split("\n")[-2]
+        self.dojo.create_room('livingspace', ['yellow'])
+        self.dojo.add_person('Bolaji', 'Adedeji', 'fellow', 'y')
+        self.dojo.print_room('yellow')
+        result = sys.stdout.getvalue().split("\n")[4]
 
-        self.assertEqual(result, 'Living room occupants --- [BOLAJI ADEDEJI]')
+        self.assertEqual(result, 'Room occupants --- [BOLAJI ADEDEJI]')
 
     def test_for_invalid_room(self):
-        """It tests."""
-        room_detail = {
-            '<room_type>': 'office',
-            '<room_name>': ['baboon']
-        }
-        room = {
-            '<room_name>': 'violet'
-        }
-        person_details = {
-            '<first_name>': 'Damilola',
-            '<last_name>': 'Durodola',
-            '<FELLOW/STAFF>': 'staff',
-            '<wants_accomodation>': ''
-        }
-        self.dojo.create_room(room_detail)
-        self.dojo.add_person(person_details)
-
-        with self.assertRaises(Exception) as result:
-            self.dojo.print_room(room)
+        with self.assertRaises(ValueError) as result:
+            self.dojo.print_room('violet')
         self.assertEqual(str(result.exception),
-                         "The room has not been created")
+                         "The room violet has not been created")
 
     def test_for_empty_office_room(self):
-        """It tests."""
-        room_detail = {
-            '<room_type>': 'office',
-            '<room_name>': ['red']
-        }
-        room = {
-            '<room_name>': 'red'
-        }
-
-        self.dojo.create_room(room_detail)
-
-        with self.assertRaises(Exception) as result:
-            self.dojo.print_room(room)
-        self.assertEqual(str(result.exception),
-                         "Office room is empty")
+        self.dojo.create_room('office', ['maroon'])
+        self.dojo.print_room('maroon')
+        result = sys.stdout.getvalue().split("\n")[1]
+        self.assertEqual(result,
+                         "The room maroon is empty")
 
     def test_for_empty_living_room(self):
-        """It tests."""
-        room_detail = {
-            '<room_type>': 'livingspace',
-            '<room_name>': ['blue']
-        }
-        room = {
-            '<room_name>': 'blue'
-        }
+        self.dojo.create_room('livingspace', ['wine'])
+        self.dojo.print_room('wine')
+        result = sys.stdout.getvalue().split("\n")[1]
 
-        self.dojo.create_room(room_detail)
-
-        with self.assertRaises(Exception) as result:
-            self.dojo.print_room(room)
-        self.assertEqual(str(result.exception),
-                         "Living room is empty")
+        self.assertEqual(result,
+                         "The room wine is empty")

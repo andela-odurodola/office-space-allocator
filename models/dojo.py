@@ -21,15 +21,17 @@ class Dojo(object):
     living_rooms = []
     persons = []
     divider = ("\n{}\n".format("-" * 30))
+    unallocated_officelist = []
+    unallocated_livinglist = []
 
     def create_room(self, room_type, room_names):
         # The function creates a new room.
 
         if not (room_type.upper() in ["OFFICE", "LIVINGSPACE"]):
-            raise ValueError("Invalid Room Type. Must be office or living")
+            raise ValueError("Invalid Room Type.Must be office or living")
 
         for room_name in room_names:
-            if room_name in self.get_all_rooms():
+            if room_name in self.get_all_room_names():
                 print("The room {} exists. Try again".format(room_name))
             else:
                 if room_type.upper() == "OFFICE":
@@ -40,7 +42,7 @@ class Dojo(object):
                 print("{} {} called {} has been successfully created".format(
                     prefix, room_type, room_name))
 
-    def get_all_rooms(self):
+    def get_all_room_names(self):
         return [room.room_name for room in self.living_rooms + self.office_rooms]
 
     def add_person(self, first_name, last_name, rank, wants_accomodation):
@@ -62,7 +64,7 @@ class Dojo(object):
     def get_available_room_spaces(room_spaces):
         # It gets a list of available rooms for allocation
         available_room_spaces = [room for room in room_spaces if (len(room.occupants) <
-                                              room.max_occupants)]
+                                 room.max_occupants)]
         return available_room_spaces
 
     @staticmethod
@@ -83,6 +85,7 @@ class Dojo(object):
         if available_office_spaces:
             self.assign_space_to_person(available_office_spaces, person)
         else:
+            self.unallocated_officelist.append(person)
             print("There is currently no office space")
 
         flag = person.wants_accomodation
@@ -92,6 +95,7 @@ class Dojo(object):
             if available_living_spaces:
                 self.assign_space_to_person(available_living_spaces, person, flag='y')
             else:
+                self.unallocated_livinglist.append(person)
                 print("There is currently no living space")
 
     def get_room_occupants(self, room_name):
@@ -101,72 +105,48 @@ class Dojo(object):
         return room_occupants
 
     def print_room(self, room_name):
-        if not(room_name in self.get_all_rooms()):
+        # It prints a list of room members.
+        if not(room_name in self.get_all_room_names()):
             raise ValueError("The room {} has not been created".format(room_name))
         room_occupants = self.get_room_occupants(room_name)
         if room_occupants:
-            print('Office room occupants --- {}'.format(room_occupants))
+            print('Room occupants --- {}'.format(room_occupants))
         else:
             print("The room {} is empty".format(room_name))
 
-    def print_allocations(self, arg):
-        """The function prints a list of all
-         allocated rooms with their members."""
-        allocation_file = arg["--o"]
-
-        for office_name, office_info in self.office_rooms.items():
-            if office_info.occupants:
+    def print_allocations(self, allocation_file=None):
+        # It prints a list of all allocated rooms with their members
+        for room in self.office_rooms + self.living_rooms:
+            if room.occupants:
+                output = (room.room_name + self.divider + str(room.occupants) + '\n')
                 if allocation_file is None:
-                    print(
-                        office_info.room_name + self.divider
-                        + str(office_info.occupants) + "\n")
+                    print(output)
                 else:
-                    with open(allocation_file + ".txt", "w") as result:
-                        result.write(office_info.room_name + self.divider
-                                     + str(office_info.occupants))
+                    with open(allocation_file + '.txt', 'w') as allocated:
+                        allocated.write(output)
 
-        for living_name, living_info in self.living_rooms.items():
-            if len(living_info.occupants) != 0:
-                if allocation_file is None:
-                    print(living_info.room_name + self.divider
-                          + str(living_info.occupants) + "\n")
-                else:
-                    with open(allocation_file + ".txt", "w") as result:
-                        result.write(living_info.room_name + self.divider
-                                     + str(living_info.occupants))
-
-    def print_unallocated(self, arg):
-        """
-        The function prints a list of unallocated
-        persons to either the screen or text file.
-        """
-        unallocated_file = arg["--o"]
-        for person_name, person_info in self.persons.items():
-
-            if (person_info.wants_accomodation == "N"
-                    and person_info.office_space_allocated == ""):
-                if unallocated_file is None:
-                    print("Unallocated persons ----{}".format(person_info))
-                else:
-                    with open(unallocated_file + ".txt", "w") as result:
-                        result.write("Unallocated persons ----{}".format(person_info))
-            elif (person_info.wants_accomodation == "Y"
-                    and person_info.living_space_allocated == ""):
-                if unallocated_file is None:
-                    print("Unallocated persons ----{}".format(person_info))
-                else:
-                    with open(unallocated_file + ".txt", "w") as result:
-                        result.write("Unallocated persons ----{}".format(person_info))
+    def print_unallocated(self, unallocated_file=None):
+        # It prints a list of unallocated persons to either the screen or text file
+        if self.unallocated_officelist or self.unallocated_livinglist:
+            unallocated_office = ("Unallocated persons for office rooms----{}".format(self.unallocated_officelist))
+            unallocated_living = ("Unallocated persons for living rooms----{}".format(self.unallocated_livinglist))
+            if unallocated_file is None:
+                print(unallocated_office)
+                print(unallocated_living)
+            else:
+                with open(unallocated_file + '.txt', 'w') as unallocated:
+                    unallocated.write(unallocated_office + '\n' + unallocated_living)
         else:
-            print ("Everyone has been allocated")
+            print("Everyone has been allocated")
 
-    def reallocate_person(self, arg):
-        """The function reallocates a person with id to a new room."""
-        person_id = arg["<person_identifier>"]
-        new_room_name = arg["<new_room_name>"]
+    def get_people_id(person_id):
+        return [person.identifier for person in self.persons]
 
-        if (person_id in self.persons.keys()) and (new_room_name in
-                                                   (self.office_rooms.keys() or self.living_rooms.keys())):
+    def reallocate_person(self, person_id, new_room_name):
+        # The function reallocates a person with id to a new room
+
+
+        if (person_id in self.get_people_id) and (new_room_name in self.get_all_room_names):
 
             if ((new_room_name == self.persons[person_id].office_space_allocated)\
                 or (new_room_name == self.persons[person_id].\
@@ -226,39 +206,26 @@ class Dojo(object):
         else:
             print ("Person {} does not exist or room name is invalid".format(person_id))
 
-    def load_people(self, arg):
-        """The function adds people to a room from a text file."""
-        name_of_file = arg["<text_file>"]
+    def load_people(self, filename):
+        # The function adds people to a room from a text file
+        # checks if the file exist
+        if os.path.isfile(filename):
+            with open(filename, "r") as f:
+                people_info = f.readlines()
 
-        with open(name_of_file, "r") as f:
-            people_info = f.readlines()
+            for line in people_info:
+                person_info = line.split()
 
-        for line in people_info:
-            person_info = line.split()
+                if len(person_info) == 3:
+                    self.add_person(person_info[0], person_info[1], person_info[2], '')
 
-            if len(person_info) == 4:
-                first_name, last_name, rank, wants_accomodation = person_info[
-                    :4]
-                person = {
-                    "<first_name>": first_name,
-                    "<last_name>": last_name,
-                    "<FELLOW/STAFF>": rank,
-                    "<wants_accomodation>": wants_accomodation
-                }
-            elif len(person_info) == 3:
-                first_name, last_name, rank = person_info[
-                    :3]
-                person = {
-                    "<first_name>": first_name,
-                    "<last_name>": last_name,
-                    "<FELLOW/STAFF>": rank,
-                    "<wants_accomodation>": ''
-                }
-
-            self.add_person(person)
+                elif len(person_info) == 4:
+                    self.add_person(person_info[0], person_info[1], person_info[2], person_info[3])
+        else:
+            print("The filename {} does not exist".format(filename))
 
     def save_state(self, arg):
-        """It saves all data into an sqlite database."""
+        # It saves all data into an sqlite database
         database_name = arg["--db"]
 
         if database_name is None:
@@ -282,7 +249,7 @@ class Dojo(object):
         database_session.commit()
 
     def load_state(self, arg):
-        """It loads saved data from the database specified."""
+        # It loads saved data from the database specified
         database_file = arg["<sqlite_database>"]
         path = 'database_model/' + database_file
         if os.path.exists(path):

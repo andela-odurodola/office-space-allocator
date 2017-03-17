@@ -3,6 +3,7 @@ import random
 import string
 
 
+
 class Person(object):
 
     def __init__(self, first_name, last_name, wants_accomodation="n"):
@@ -18,7 +19,7 @@ class Person(object):
 
 
 class Fellow(Person):
-    fellows_id = []
+
     def __init__(self, first_name, last_name, wants_accomodation):
         super().__init__(first_name, last_name, wants_accomodation)
         self.identifier = self.get_fellow_identifier
@@ -26,11 +27,10 @@ class Fellow(Person):
 
     def get_fellow_identifier(self):
         fellow_id = 'F'.join([random.choice(string.ascii_letters + string.digits) for n in xrange(4)])
-        self.fellows_id.append(fellow_id)
         return fellow_id
 
 class Staff(Person):
-    staffs_id = []
+
     def __init__(self, first_name, last_name):
         super().__init__(first_name, last_name, "n")
         self.identifier = self.get_staff_identifier
@@ -38,5 +38,4 @@ class Staff(Person):
 
     def get_staff_identifier(self):
         staff_id = 'S'.join([random.choice(string.ascii_letters + string.digits) for n in xrange(4)])
-        self.staffs_id.append(staff_id)
         return staff_id
