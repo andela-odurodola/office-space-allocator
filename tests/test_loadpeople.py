@@ -14,6 +14,8 @@ class TestLoadPeople(unittest.TestCase):
         Dojo.office_rooms = []
         Dojo.living_rooms = []
         Dojo.persons = []
+        Dojo.unallocated_officelist = []
+        Dojo.unallocated_livinglist = []
 
     def test_load_staff_successfully(self):
         # It tests for staff
@@ -34,3 +36,9 @@ class TestLoadPeople(unittest.TestCase):
         self.dojo.load_people('load_fellow.txt')
 
         self.assertEqual(len(self.dojo.living_rooms), 1)
+
+    def test_that_file_exist(self):
+        self.dojo.load_people('testing.txt')
+        result = sys.stdout.getvalue().strip()
+
+        self.assertEqual(result, "The filename testing.txt does not exist")

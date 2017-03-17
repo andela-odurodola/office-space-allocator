@@ -15,6 +15,8 @@ class TestPrintRoom(unittest.TestCase):
         Dojo.office_rooms = []
         Dojo.living_rooms = []
         Dojo.persons = []
+        Dojo.unallocated_officelist = []
+        Dojo.unallocated_livinglist = []
 
     def test_that_it_prints_occupants_officeroom(self):
         self.dojo.create_room('office', ['purple'])

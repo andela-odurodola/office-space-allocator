@@ -57,7 +57,7 @@ class Dojo(object):
             raise Exception('Person can only be a fellow or staff')
 
         self.persons.append(new_user)
-        print("{0} {1} has been successfully added".format(new_user.rank, new_user))
+        print("{0} {1} has been successfully added with id {2}".format(new_user.rank, new_user, new_user.identifier))
         self.assign_person(new_user)
 
     @staticmethod
@@ -70,11 +70,13 @@ class Dojo(object):
     @staticmethod
     def assign_space_to_person(room_spaces, person, flag=None):
         # It randomly choose an available room
-        key_map = {"OFFICE": person.office_space_allocated,
-                   "LIVINGSPACE": person.living_space_allocated}
         available_space = random.choice(room_spaces)
         available_space.occupants.append(person)
-        key_map[available_space.room_type] = available_space
+        if available_space.room_type == "OFFICE":
+            person.office_space_allocated = available_space
+        else:
+            person.living_space_allocated = available_space
+
         print("{0} has been allocated the {1} {2}".format(
             person.first_name, available_space.room_type.lower(), available_space.room_name))
 
@@ -139,72 +141,38 @@ class Dojo(object):
         else:
             print("Everyone has been allocated")
 
-    def get_people_id(person_id):
-        return [person.identifier for person in self.persons]
+    def get_person(self, person_id):
+        person_list = [person for person in self.persons if person.identifier == person_id]
+        if person_list:
+            return person_list[0]
+
+
+    def get_room(self, room_name):
+        room_list = [room for room in self.living_rooms + self.office_rooms if room_name.lower() == room.room_name.lower()]
+        if room_list:
+            return room_list[0]
+
+
+    def get_members_of_a_room(person, room_name):
+        if person in self.get_room_occupants:
+            return True
 
     def reallocate_person(self, person_id, new_room_name):
         # The function reallocates a person with id to a new room
+        person = self.get_person(person_id)
+        room = self.get_room(new_room_name)
+        reallocate_map = {"OFFICE": Office, "LIVINGSPACE": LivingSpace}
+        unallocated_list_map = {"OFFICE": Dojo.unallocated_officelist, "LIVINGSPACE": Dojo.unallocated_livinglist}
 
-
-        if (person_id in self.get_people_id) and (new_room_name in self.get_all_room_names):
-
-            if ((new_room_name == self.persons[person_id].office_space_allocated)\
-                or (new_room_name == self.persons[person_id].\
-                    living_space_allocated)):
-                print ("Person {} is already a member of room {}".format(
-                    person_id, new_room_name))
-            else:
-                if new_room_name in self.office_rooms.keys():
-                    if (len(self.office_rooms[new_room_name].occupants) < self.
-                            office_rooms[new_room_name].max_occupants):
-                        if self.persons[person_id].office_space_allocated:
-                            old_room_name = self.office_rooms[
-                                self.persons[person_id].office_space_allocated]
-                            old_room_name.occupants.remove(
-                                self.persons[person_id])
-
-                            self.persons[
-                                person_id].office_space_allocated = self.\
-                                office_rooms[new_room_name].room_name
-                            self.office_rooms[new_room_name].occupants.\
-                                append(self.persons[person_id])
-                        else:
-                            self.persons[person_id].office_space_allocated =\
-                                self.office_rooms[new_room_name].room_name
-                            self.office_rooms[new_room_name].occupants.\
-                                append(self.persons[person_id])
-
-                        print("identifier {0} has been reallocated to the office {1}"
-                              .format(person_id, self.persons[person_id].
-                                      office_space_allocated))
-                    else:
-                        print("{} is full".format(new_room_name))
-                else:
-                    if (len(self.living_rooms[new_room_name].occupants) < self.
-                            living_rooms[new_room_name].max_occupants):
-                        if self.persons[person_id].living_space_allocated:
-                            old_room_name = self.living_rooms[
-                                self.persons[person_id].living_space_allocated]
-                            old_room_name.occupants.remove(
-                                self.persons[person_id])
-
-                            self.persons[person_id].living_space_allocated =\
-                                self.living_rooms[new_room_name].room_name
-                            self.living_rooms[new_room_name].occupants.\
-                                append(self.persons[person_id])
-                        else:
-                            self.persons[person_id].living_space_allocated =\
-                             self.living_rooms[new_room_name].room_name
-                            self.living_rooms[new_room_name].occupants.\
-                                append(self.persons[person_id])
-                        print("identifier {0} has been reallocated to the livingroom {1}"
-                              .format(person_id, self.persons[person_id].
-                                      living_space_allocated))
-                    else:
-                        print("{} is full".format(new_room_name))
-
+        if person and room:
+            try:
+                room.check_availability()
+                room.is_member(person)
+                reallocate_map[room.room_type].reallocate_person(person, room, unallocated_list_map[room.room_type])
+            except ValueError as e:
+                print(e)
         else:
-            print ("Person {} does not exist or room name is invalid".format(person_id))
+            print ("Person with the id {} or room {} does not exist".format(person_id, new_room_name))
 
     def load_people(self, filename):
         # The function adds people to a room from a text file
@@ -224,10 +192,8 @@ class Dojo(object):
         else:
             print("The filename {} does not exist".format(filename))
 
-    def save_state(self, arg):
+    def save_state(self, database_name):
         # It saves all data into an sqlite database
-        database_name = arg["--db"]
-
         if database_name is None:
             database_name = 'database_model/dojo.db'
         else:
@@ -248,9 +214,8 @@ class Dojo(object):
         database_session.add(persons_details)
         database_session.commit()
 
-    def load_state(self, arg):
+    def load_state(self, database_file):
         # It loads saved data from the database specified
-        database_file = arg["<sqlite_database>"]
         path = 'database_model/' + database_file
         if os.path.exists(path):
 

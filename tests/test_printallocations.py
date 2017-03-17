@@ -20,6 +20,8 @@ class TestPrintAllocation(unittest.TestCase):
         Dojo.office_rooms = []
         Dojo.living_rooms = []
         Dojo.persons = []
+        Dojo.unallocated_officelist = []
+        Dojo.unallocated_livinglist = []
 
     def test_print_allocations_to_screen(self):
         self.dojo.create_room('office', ['diamond'])

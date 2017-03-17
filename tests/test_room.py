@@ -14,6 +14,8 @@ class TestCreateRoom(unittest.TestCase):
         Dojo.office_rooms = []
         Dojo.living_rooms = []
         Dojo.persons = []
+        Dojo.unallocated_officelist = []
+        Dojo.unallocated_livinglist = []
 
     def test_create_room_office_successfully(self):
         # It tests that room type office is created

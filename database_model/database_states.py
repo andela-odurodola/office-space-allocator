@@ -8,10 +8,9 @@ Base = declarative_base()
 
 
 class DatabaseManager(object):
-    """Data persistence."""
+    # Data persistence
 
     def __init__(self, db_name):
-        """Constructor function for the class."""
         self.db_name = db_name
         self.engine = create_engine('sqlite:///' + self.db_name, echo=False)
         self.session = sessionmaker(bind=self.engine)
@@ -19,7 +18,7 @@ class DatabaseManager(object):
 
 
 class OfficeRooms(Base):
-    """Mapped Office class with it's table."""
+    # Mapped Office class with it's table
 
     __tablename__ = 'office_room'
 
@@ -28,7 +27,7 @@ class OfficeRooms(Base):
 
 
 class LivingRooms(Base):
-    """Mapped Livingspace class with it's table."""
+    # Mapped Livingspace class with it's table
 
     __tablename__ = 'living_space'
 
@@ -37,7 +36,7 @@ class LivingRooms(Base):
 
 
 class Persons(Base):
-    """Mapped Person dictionary with it's table."""
+    # Mapped Person dictionary with it's table
 
     __tablename__ = 'person'
 
