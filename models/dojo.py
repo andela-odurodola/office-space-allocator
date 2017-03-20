@@ -153,9 +153,9 @@ class Dojo(object):
             return room_list[0]
 
 
-    def get_members_of_a_room(person, room_name):
-        if person in self.get_room_occupants:
-            return True
+    def person_is_room_member (person, room_name):
+        return person in self.get_room_occupants
+
 
     def reallocate_person(self, person_id, new_room_name):
         # The function reallocates a person with id to a new room
