@@ -63,56 +63,61 @@ def docopt_cmd(func):
 
 
 class DojoRoom(cmd.Cmd):
-    """Welcome to the Dojo Room App!"""
+    """
+    Welcome to the Dojo Room App!.
+    """
     prompt = '(Dojo) '
     dojo = Dojo()
 
     @docopt_cmd
     def do_create_room(self, arg):
         """Usage: create_room <room_type>  <room_name>..."""
-        self.dojo.create_room(arg)
+        try:
+            self.dojo.create_room(arg['<room_type>'], arg['<room_name>'])
+        except ValueError as e:
+            print(e)
+
 
     @docopt_cmd
     def do_add_person(self, arg):
         """Usage: add_person <first_name> <last_name> <FELLOW/STAFF> [<wants_accomodation>]"""
-        self.dojo.add_person(arg)
+        self.dojo.add_person(arg['<first_name>'], arg['<last_name>'],
+                             arg['<FELLOW/STAFF>'], arg['<wants_accomodation>'])
 
     @docopt_cmd
     def do_print_room(self, arg):
         """Usage: print_room <room_name>"""
-        self.dojo.print_room(arg)
+        self.dojo.print_room(arg['<room_name>'])
 
     @docopt_cmd
     def do_print_allocations(self, arg):
         """Usage: print_allocations [--o=filename]"""
-        self.dojo.print_allocations(arg)
-        # print(arg)
+        self.dojo.print_allocations(arg['--o'])
 
     @docopt_cmd
     def do_print_unallocated(self, arg):
         """Usage: print_unallocated [--o=filename]"""
-        self.dojo.print_unallocated(arg)
-        # print(arg)
+        self.dojo.print_unallocated(arg['--o'])
 
     @docopt_cmd
     def do_reallocate_person(self, arg):
         """Usage: reallocate_person <person_identifier> <new_room_name>"""
-        self.dojo.reallocate_person(arg)
+        self.dojo.reallocate_person(arg['<person_identifier>'], arg['<new_room_name>'])
 
     @docopt_cmd
     def do_load_people(self, arg):
         """Usage: load_people <text_file>"""
-        self.dojo.load_people(arg)
+        self.dojo.load_people(arg['<text_file>'])
 
     @docopt_cmd
     def do_save_state(self, arg):
         """Usage: save_state [--db=sqlite_database]"""
-        self.dojo.save_state(arg)
+        self.dojo.save_state(arg['--db=sqlite_database'])
 
     @docopt_cmd
     def do_load_state(self, arg):
         """Usage: load_state <sqlite_database>"""
-        self.dojo.load_state(arg)
+        self.dojo.load_state(arg['<sqlite_database>'])
 
     def do_q(self, arg):
         """Quits out of Interactive Mode."""

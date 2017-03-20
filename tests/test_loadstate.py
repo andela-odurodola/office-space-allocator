@@ -8,21 +8,20 @@ from models.dojo import Dojo
 
 
 class TestLoadState(unittest.TestCase):
-    """It tests for data persistence."""
 
     def setUp(self):
-        """It runs the method prior to each test."""
         self.dojo = Dojo()
-        self.invaliddata = {'<sqlite_database>': 'te.db'}
 
     def tearDown(self):
-        self.dojo.office_rooms = {}
-        self.dojo.living_rooms = {}
-        self.dojo.persons = {}
+        Dojo.office_rooms = []
+        Dojo.living_rooms = []
+        Dojo.persons = []
+        Dojo.unallocated_officelist = []
+        Dojo.unallocated_livinglist = []
 
     def test_if_file_exist(self):
         with self.assertRaises(Exception) as result:
-            self.dojo.load_state(self.invaliddata)
+            self.dojo.load_state('te.db')
 
         self.assertEqual(str(result.exception),
                          "File does not exist.")
